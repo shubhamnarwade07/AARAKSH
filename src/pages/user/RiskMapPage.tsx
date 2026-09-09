@@ -1,8 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import * as maplibregl from 'maplibre-gl';
-import 'maplibre-gl/dist/maplibre-gl.css';
-import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
 import { useDemoMode } from '@/contexts/DemoContext';
 import { DemoModeBanner } from '@/components/ui/DemoModeBanner';
 import { RiskBadge } from '@/components/ui/RiskBadge';
@@ -15,18 +13,14 @@ import {
   AlertTriangle, Brain, Shield, ArrowRight
 } from 'lucide-react';
 
-// Fix MapLibre blank screen in Vite production build
-maplibregl.setWorkerUrl(workerUrl);
-
-
 // Software data layers — no physical sensor layer
 const LAYER_OPTIONS = [
-  { id: 'risk_zones',     label: 'Risk Index',               enabled: true,  available: true  },
-  { id: 'rainfall',       label: 'Rainfall',                 enabled: false, available: false },
-  { id: 'soil_moisture',  label: 'Soil Moisture',            enabled: false, available: false },
-  { id: 'water_level',    label: 'Hydrological Status',      enabled: false, available: false },
-  { id: 'terrain',        label: 'Terrain / Slope',          enabled: false, available: false },
-  { id: 'historical',     label: 'Historical Events',        enabled: false, available: false },
+  { id: 'risk_zones', label: 'Risk Index', enabled: true, available: true },
+  { id: 'rainfall', label: 'Rainfall', enabled: false, available: false },
+  { id: 'soil_moisture', label: 'Soil Moisture', enabled: false, available: false },
+  { id: 'water_level', label: 'Hydrological Status', enabled: false, available: false },
+  { id: 'terrain', label: 'Terrain / Slope', enabled: false, available: false },
+  { id: 'historical', label: 'Historical Events', enabled: false, available: false },
 ];
 
 function TrendIcon({ trend }: { trend: 'INCREASING' | 'STABLE' | 'DECREASING' }) {
@@ -163,23 +157,21 @@ export function RiskMapPage() {
               <button
                 key={id}
                 onClick={() => setScenario(id)}
-                className={`rounded-full px-2.5 py-0.5 font-medium transition-all ${
-                  currentScenario.id === id
+                className={`rounded-full px-2.5 py-0.5 font-medium transition-all ${currentScenario.id === id
                     ? id === 'CRITICAL' ? 'bg-red-600 text-white'
                       : id === 'RISING_RISK' ? 'bg-orange-500 text-white'
-                      : id === 'HEAVY_RAIN' ? 'bg-yellow-500 text-white'
-                      : 'bg-green-600 text-white'
+                        : id === 'HEAVY_RAIN' ? 'bg-yellow-500 text-white'
+                          : 'bg-green-600 text-white'
                     : 'text-slate-600 hover:bg-slate-100'
-                }`}
+                  }`}
               >
                 {id.replace(/_/g, ' ')}
               </button>
             ))}
             <button
               onClick={toggleSimulation}
-              className={`rounded-full px-2.5 py-0.5 font-medium transition-all flex items-center gap-1 ml-1 ${
-                isSimulating ? 'bg-blue-700 text-white' : 'text-slate-600 hover:bg-slate-100'
-              }`}
+              className={`rounded-full px-2.5 py-0.5 font-medium transition-all flex items-center gap-1 ml-1 ${isSimulating ? 'bg-blue-700 text-white' : 'text-slate-600 hover:bg-slate-100'
+                }`}
             >
               <span className={`h-1.5 w-1.5 rounded-full ${isSimulating ? 'bg-white animate-pulse' : 'bg-slate-400'}`} />
               {isSimulating ? 'Stop' : 'Auto'}
