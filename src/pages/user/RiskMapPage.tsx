@@ -2,8 +2,12 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import * as maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
+import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
 import { useDemoMode } from '@/contexts/DemoContext';
-import { DemoModeBanner } from '@/components/ui/DemoModeBanner';
+
+// Fix MapLibre blank screen in Vite production build
+maplibregl.setWorkerUrl(workerUrl);
+
 import { RiskBadge } from '@/components/ui/RiskBadge';
 import { getRiskColor } from '@/lib/utils';
 import { MOCK_LOCATIONS } from '@/data/mockLocations';
