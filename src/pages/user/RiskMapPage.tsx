@@ -4,10 +4,7 @@ import * as maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
 import { useDemoMode } from '@/contexts/DemoContext';
-
-// Fix MapLibre blank screen in Vite production build
-maplibregl.setWorkerUrl(workerUrl);
-
+import { DemoModeBanner } from '@/components/ui/DemoModeBanner';
 import { RiskBadge } from '@/components/ui/RiskBadge';
 import { getRiskColor } from '@/lib/utils';
 import { MOCK_LOCATIONS } from '@/data/mockLocations';
@@ -17,6 +14,10 @@ import {
   X, Layers, MapPin, TrendingUp, TrendingDown, Minus,
   AlertTriangle, Brain, Shield, ArrowRight
 } from 'lucide-react';
+
+// Fix MapLibre blank screen in Vite production build
+maplibregl.setWorkerUrl(workerUrl);
+
 
 // Software data layers — no physical sensor layer
 const LAYER_OPTIONS = [
