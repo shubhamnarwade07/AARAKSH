@@ -1,0 +1,276 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600;1,700&display=swap');
+@import 'tailwindcss';
+
+@theme {
+  /* ── AARAKSH Core Palette ─────────────────────────────── */
+  --color-forest-950: #060f0a;
+  --color-forest-900: #0a1a10;
+  --color-forest-800: #0f2918;
+  --color-forest-700: #163d24;
+  --color-forest-600: #1e5231;
+  --color-forest-500: #276942;
+  --color-forest-400: #3a8f5b;
+  --color-forest-300: #5db07f;
+  --color-forest-200: #93cda9;
+  --color-forest-100: #c4e5d2;
+  --color-forest-50:  #eaf5ef;
+
+  --color-teal-950: #020d0c;
+  --color-teal-900: #061a17;
+  --color-teal-800: #0b2d29;
+  --color-teal-700: #0f4038;
+  --color-teal-600: #145549;
+  --color-teal-500: #1a6b5c;
+  --color-teal-400: #22866f;
+  --color-teal-300: #35a98d;
+  --color-teal-200: #62c9ae;
+  --color-teal-100: #a8e4d6;
+  --color-teal-50:  #e0f5f0;
+
+  --color-cyan-accent: #06b6d4;
+  --color-mint-accent: #34d399;
+  --color-sage-accent: #86efac;
+
+  /* Neutral slate for operational UI */
+  --color-slate-950: #020617;
+  --color-slate-900: #0f172a;
+  --color-slate-800: #1e293b;
+  --color-slate-700: #334155;
+  --color-slate-600: #475569;
+  --color-slate-500: #64748b;
+  --color-slate-400: #94a3b8;
+  --color-slate-300: #cbd5e1;
+  --color-slate-200: #e2e8f0;
+  --color-slate-100: #f1f5f9;
+  --color-slate-50:  #f8fafc;
+
+  /* Risk palette */
+  --color-risk-low:           #22c55e;
+  --color-risk-low-dim:       #16a34a;
+  --color-risk-low-bg:        #dcfce7;
+  --color-risk-moderate:      #eab308;
+  --color-risk-moderate-dim:  #ca8a04;
+  --color-risk-moderate-bg:   #fef9c3;
+  --color-risk-high:          #f97316;
+  --color-risk-high-dim:      #ea580c;
+  --color-risk-high-bg:       #ffedd5;
+  --color-risk-critical:      #ef4444;
+  --color-risk-critical-dim:  #dc2626;
+  --color-risk-critical-bg:   #fee2e2;
+
+  /* Typography */
+  --font-sans:   'Inter', system-ui, -apple-system, sans-serif;
+  --font-serif:  'Playfair Display', Georgia, 'Times New Roman', serif;
+}
+
+/* ── Base Reset ──────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-sans);
+  background-color: #f8fafc;
+  color: #0f172a;
+  margin: 0; padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.6;
+}
+
+/* Operational app body (inside AppShell) */
+.app-body {
+  background-color: #0b1a14;
+  color: #e2e8f0;
+}
+
+/* ── Scrollbar ───────────────────────────────────────────── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #475569; }
+
+/* Dark scrollbar for app shell */
+.dark-scroll ::-webkit-scrollbar-thumb { background: #163d24; }
+.dark-scroll ::-webkit-scrollbar-thumb:hover { background: #1e5231; }
+
+/* ── Focus ───────────────────────────────────────────────── */
+*:focus-visible {
+  outline: 2px solid #35a98d;
+  outline-offset: 2px;
+}
+
+/* ── MapLibre ────────────────────────────────────────────── */
+.maplibregl-canvas-container { width: 100%; height: 100%; }
+.maplibregl-ctrl-group { background: rgba(10, 26, 16, 0.92) !important; border: 1px solid rgba(255,255,255,0.1) !important; }
+.maplibregl-ctrl-group button { background: transparent !important; }
+.maplibregl-ctrl-group button:hover { background: rgba(255,255,255,0.08) !important; }
+.maplibregl-ctrl button .maplibregl-ctrl-icon { filter: invert(0.8); }
+.maplibregl-ctrl-scale { background: rgba(10,26,16,0.8) !important; border-color: rgba(255,255,255,0.2) !important; color: rgba(255,255,255,0.6) !important; font-size: 10px !important; }
+
+/* ── Typography Utilities ───────────────────────────────── */
+.font-serif { font-family: var(--font-serif); }
+.font-sans  { font-family: var(--font-sans); }
+
+/* ── Animations ─────────────────────────────────────────── */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeInFast {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes slideRight {
+  from { opacity: 0; transform: translateX(-16px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes pulseRisk {
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 currentColor; }
+  50%       { opacity: 0.7; box-shadow: 0 0 0 6px transparent; }
+}
+@keyframes markerPulse {
+  0%   { transform: scale(1); opacity: 1; }
+  50%  { transform: scale(1.6); opacity: 0; }
+  100% { transform: scale(1); opacity: 0; }
+}
+@keyframes shimmer {
+  from { background-position: -200% 0; }
+  to   { background-position: 200% 0; }
+}
+@keyframes gradientShift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+@keyframes scanline {
+  0%   { transform: translateY(-100%); }
+  100% { transform: translateY(100vh); }
+}
+@keyframes breathe {
+  0%, 100% { opacity: 0.6; }
+  50%       { opacity: 1; }
+}
+
+.animate-fade-in       { animation: fadeIn 0.25s ease-out; }
+.animate-fade-in-fast  { animation: fadeInFast 0.15s ease-out; }
+.animate-slide-right   { animation: slideRight 0.25s ease-out; }
+.animate-slide-up      { animation: slideUp 0.3s ease-out; }
+.animate-pulse-risk    { animation: pulseRisk 2s ease-in-out infinite; }
+.animate-breathe       { animation: breathe 3s ease-in-out infinite; }
+
+/* ── Map Marker Pulse ───────────────────────────────────── */
+.marker-pulse::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  animation: markerPulse 2s ease-out infinite;
+}
+.marker-critical { color: #ef4444; }
+.marker-high     { color: #f97316; }
+.marker-moderate { color: #eab308; }
+.marker-low      { color: #22c55e; }
+
+/* ── Skeleton Shimmer ───────────────────────────────────── */
+.skeleton {
+  background: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 6px;
+}
+.skeleton-light {
+  background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 6px;
+}
+
+/* ── Risk Colour Utilities ──────────────────────────────── */
+.risk-critical { color: #ef4444; }
+.risk-high     { color: #f97316; }
+.risk-moderate { color: #eab308; }
+.risk-low      { color: #22c55e; }
+
+.risk-critical-bg { background-color: rgba(239,68,68,0.12); border-color: rgba(239,68,68,0.3); }
+.risk-high-bg     { background-color: rgba(249,115,22,0.12); border-color: rgba(249,115,22,0.3); }
+.risk-moderate-bg { background-color: rgba(234,179,8,0.12);  border-color: rgba(234,179,8,0.3); }
+.risk-low-bg      { background-color: rgba(34,197,94,0.12);  border-color: rgba(34,197,94,0.3); }
+
+/* ── App Shell Glass Cards ──────────────────────────────── */
+.glass-card {
+  background: rgba(15, 41, 24, 0.6);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+}
+.glass-card-light {
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* ── Causal Chain Arrow ─────────────────────────────────── */
+.causal-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(53, 169, 141, 0.5);
+  font-size: 20px;
+}
+
+/* ── Environmental signal bars ──────────────────────────── */
+.signal-bar {
+  height: 4px;
+  border-radius: 2px;
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ── Page transition wrapper ────────────────────────────── */
+.page-enter {
+  animation: fadeIn 0.2s ease-out;
+}
+
+/* ── Landing page hero text gradient ────────────────────── */
+.text-gradient-green {
+  background: linear-gradient(135deg, #34d399 0%, #06b6d4 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.text-gradient-warm {
+  background: linear-gradient(135deg, #f97316 0%, #ef4444 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Intelligence panel ─────────────────────────────────── */
+.intel-panel {
+  background: rgba(6, 15, 10, 0.95);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(53, 169, 141, 0.2);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05);
+}
+
+/* ── Sidebar active glow ────────────────────────────────── */
+.nav-active-glow {
+  box-shadow: inset 3px 0 0 #35a98d;
+}
+
+/* ── Chart tooltip ──────────────────────────────────────── */
+.recharts-tooltip-wrapper .recharts-default-tooltip {
+  background: rgba(10, 26, 16, 0.95) !important;
+  border: 1px solid rgba(53, 169, 141, 0.3) !important;
+  border-radius: 8px !important;
+  color: #e2e8f0 !important;
+  font-size: 12px !important;
+}
+.recharts-tooltip-label { color: #94a3b8 !important; }
+
+/* ── Scrollbar inside dark panels ──────────────────────── */
+.dark-panel { scrollbar-color: #163d24 transparent; }

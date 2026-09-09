@@ -1,0 +1,45 @@
+import { MLModel, ModelStatus } from '@/types';
+
+export const MOCK_ML_MODELS: MLModel[] = [
+  {
+    id: 'MDL_001',
+    name: 'Flash Flood Risk Predictor',
+    version: 'v0.1.0-prototype',
+    type: 'XGBoost Gradient Boosting',
+    status: 'PLANNED' as ModelStatus,
+    description: 'Primary risk prediction model using XGBoost. Planned to integrate rainfall, soil moisture, water level, terrain, and historical features to produce hyper-local risk scores at village/ward level.',
+    features: ['Rainfall (24h cumulative)', 'Rainfall intensity (1h)', 'Soil moisture (%)', 'Water level (m)', 'Slope angle (°)', 'Aspect', 'Catchment area', 'Historical events', 'Antecedent conditions'],
+    targetVariable: 'Flash flood risk score (0–1)',
+    trainingDataStatus: 'DATA COLLECTION PENDING',
+    metrics: {
+      accuracy: null,
+      precision: null,
+      recall: null,
+      f1Score: null,
+      auc: null,
+      validationStatus: 'AWAITING_VALIDATION',
+    },
+    lastTrained: null,
+    nextTraining: null,
+    notes: 'Model architecture designed. Training data collection and feature engineering in progress. Will be evaluated using historical flood events from 2010–2024.',
+    isPrototype: true,
+  },
+  {
+    id: 'MDL_002',
+    name: 'Rapid Debris Flow Detector',
+    version: 'v0.0.1-concept',
+    type: 'Random Forest',
+    status: 'PLANNED' as ModelStatus,
+    description: 'Secondary model for debris flow and landslide-triggered flood detection. Uses slope stability indicators and soil saturation features.',
+    features: ['Slope angle (°)', 'Soil saturation', 'Rainfall intensity', 'Geology type', 'Vegetation index', 'Recent disturbance'],
+    targetVariable: 'Debris flow probability (0–1)',
+    trainingDataStatus: 'REQUIREMENTS DEFINED',
+    metrics: {
+      validationStatus: 'AWAITING_VALIDATION',
+    },
+    lastTrained: null,
+    nextTraining: null,
+    notes: 'Concept phase. Dependent on geological and soil data availability.',
+    isPrototype: true,
+  },
+];
