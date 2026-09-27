@@ -437,6 +437,8 @@ export function LandingPage() {
             </a>
           </div>
         </div>
+      </section>
+
       {/* ── SECTION: THE CHALLENGE / ABOUT (Enhanced) ───────────────────── */}
       <section
         id="about"
