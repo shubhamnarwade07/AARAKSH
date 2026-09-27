@@ -8,7 +8,10 @@ export function AppShell() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <div className="flex h-screen overflow-hidden" style={{ background: '#080f0b' }}>
+    <div
+      className="flex h-screen overflow-hidden transition-colors duration-300"
+      style={{ background: 'var(--bg-app)', color: 'var(--text-primary)' }}
+    >
       {/* Mobile overlay */}
       {mobileOpen && (
         <div
@@ -37,8 +40,8 @@ export function AppShell() {
           }}
         />
         <main
-          className="flex-1 overflow-y-auto dark-panel"
-          style={{ background: '#0a1208' }}
+          className="flex-1 overflow-y-auto dark-panel transition-colors duration-300"
+          style={{ background: 'var(--bg-app)' }}
         >
           <div className="animate-fade-in h-full">
             <Outlet />

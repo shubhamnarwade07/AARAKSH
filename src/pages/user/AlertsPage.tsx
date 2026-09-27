@@ -47,7 +47,7 @@ export function AlertsPage() {
     navigate(ROUTES.APP_PREDICTIONS);
   }
 
-  const CARD = { background: 'rgba(15,41,24,0.5)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '12px', overflow: 'hidden' as const };
+  const CARD = { background: 'var(--bg-card)', border: '1px solid var(--border-card)', borderRadius: '12px', overflow: 'hidden' as const };
 
   return (
     <div className="p-4 md:p-6 space-y-4">
@@ -60,7 +60,7 @@ export function AlertsPage() {
       {/* Header */}
       <div className="flex items-center gap-3">
         <Bell className="h-5 w-5 text-slate-500" />
-        <h2 className="text-lg font-semibold text-white">Active Alerts</h2>
+        <h2 className="text-lg font-semibold" style={{ color: 'var(--text-primary)' }}>Active Alerts</h2>
         {activeCount > 0 && (
           <span className="rounded-full px-2.5 py-0.5 text-xs font-bold" style={{ background: 'rgba(239,68,68,0.2)', color: '#ef4444', border: '1px solid rgba(239,68,68,0.3)' }}>
             {activeCount} Active
@@ -69,18 +69,18 @@ export function AlertsPage() {
       </div>
 
       {/* Filters */}
-      <div className="rounded-xl px-4 py-3" style={{ background: 'rgba(15,41,24,0.4)', border: '1px solid rgba(255,255,255,0.06)' }}>
+      <div className="rounded-xl px-4 py-3" style={{ background: 'var(--bg-card-subtle)', border: '1px solid var(--border-subtle)' }}>
         <div className="flex flex-wrap items-center gap-3">
-          <Filter className="h-4 w-4 text-slate-600 flex-shrink-0" />
+          <Filter className="h-4 w-4 text-slate-500 flex-shrink-0" />
           <div className="flex flex-wrap gap-1.5">
-            <span className="text-[10px] text-slate-600 uppercase tracking-wider self-center mr-1">Status:</span>
+            <span className="text-[10px] text-slate-500 uppercase tracking-wider self-center mr-1">Status:</span>
             {(['ALL', 'ACTIVE', 'ACKNOWLEDGED', 'RESOLVED'] as const).map(s => (
               <button key={s} onClick={() => setStatusFilter(s)}
                 className="rounded-full px-2.5 py-1 text-xs font-medium transition-all"
                 style={{
-                  background: statusFilter === s ? 'rgba(53,169,141,0.2)' : 'rgba(255,255,255,0.04)',
-                  border: `1px solid ${statusFilter === s ? 'rgba(53,169,141,0.4)' : 'rgba(255,255,255,0.08)'}`,
-                  color: statusFilter === s ? '#35a98d' : '#64748b',
+                  background: statusFilter === s ? 'rgba(56,189,248,0.2)' : 'rgba(255,255,255,0.04)',
+                  border: `1px solid ${statusFilter === s ? 'rgba(56,189,248,0.4)' : 'rgba(255,255,255,0.08)'}`,
+                  color: statusFilter === s ? '#38bdf8' : '#64748b',
                 }}>
                 {s === 'ALL' ? 'All' : s.charAt(0) + s.slice(1).toLowerCase()}
               </button>
@@ -129,10 +129,10 @@ export function AlertsPage() {
             return (
               <div
                 key={alert.id}
-                className="rounded-xl overflow-hidden"
+                className="rounded-xl overflow-hidden transition-colors duration-200"
                 style={{
-                  background: 'rgba(15,41,24,0.45)',
-                  border: '1px solid rgba(255,255,255,0.06)',
+                  background: 'var(--bg-card)',
+                  border: '1px solid var(--border-card)',
                   borderLeft: `3px solid ${sevColor}`,
                 }}
               >
@@ -140,7 +140,7 @@ export function AlertsPage() {
                   {/* Top row */}
                   <div className="flex flex-wrap items-center gap-2 mb-2">
                     <span className="h-2.5 w-2.5 rounded-full flex-shrink-0" style={{ background: sevColor }} />
-                    <span className="font-semibold text-white text-sm">{alert.title}</span>
+                    <span className="font-semibold text-sm" style={{ color: 'var(--text-primary)' }}>{alert.title}</span>
                     <span
                       className="rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase"
                       style={{ background: statusCfg.bg, color: statusCfg.text }}

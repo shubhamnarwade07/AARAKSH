@@ -11,13 +11,13 @@ import { RiskLevel } from '@/types';
 const RISK_COLORS: Record<RiskLevel, string> = { LOW: '#22c55e', MODERATE: '#eab308', HIGH: '#f97316', CRITICAL: '#ef4444' };
 
 const CARD_STYLE = {
-  background: 'rgba(15,41,24,0.5)',
-  border: '1px solid rgba(255,255,255,0.07)',
+  background: 'var(--bg-card)',
+  border: '1px solid var(--border-card)',
   borderRadius: '12px',
   overflow: 'hidden' as const,
 };
 const HEADER_STYLE = {
-  borderBottom: '1px solid rgba(255,255,255,0.06)',
+  borderBottom: '1px solid var(--border-subtle)',
   padding: '12px 16px',
   display: 'flex',
   alignItems: 'center',

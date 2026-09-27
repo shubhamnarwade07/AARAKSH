@@ -8,17 +8,17 @@ interface CardProps extends HTMLAttributes<HTMLDivElement> {
 
 export function Card({ className, children, padding = 'default', variant = 'light', style, ...props }: CardProps) {
   const darkStyle = variant === 'dark' ? {
-    background: 'rgba(15,41,24,0.6)',
-    border: '1px solid rgba(255,255,255,0.07)',
+    background: 'var(--bg-card)',
+    border: '1px solid var(--border-card)',
     ...style,
   } : style;
 
   return (
     <div
       className={cn(
-        'rounded-xl',
+        'rounded-xl transition-colors duration-200',
         variant === 'light'
-          ? 'bg-white border border-slate-100 shadow-sm'
+          ? 'bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 shadow-sm'
           : 'glass-card',
         padding === 'default' && 'p-4',
         padding === 'sm' && 'p-3',
@@ -44,7 +44,11 @@ export function CardHeader({ className, children, ...props }: CardHeaderProps) {
 interface CardTitleProps extends HTMLAttributes<HTMLHeadingElement> {}
 export function CardTitle({ className, children, ...props }: CardTitleProps) {
   return (
-    <h3 className={cn('text-sm font-semibold text-slate-800', className)} {...props}>
+    <h3
+      className={cn('text-sm font-semibold', className)}
+      style={{ color: 'var(--text-primary)' }}
+      {...props}
+    >
       {children}
     </h3>
   );

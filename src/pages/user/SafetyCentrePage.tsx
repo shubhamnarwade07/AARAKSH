@@ -117,17 +117,17 @@ export function SafetyCentrePage() {
       <div className="grid lg:grid-cols-3 gap-4">
         {/* What to do now — 2 cols */}
         <div className="lg:col-span-2 space-y-4">
-          <div className="rounded-xl overflow-hidden" style={{ background: 'rgba(15,41,24,0.5)', border: '1px solid rgba(255,255,255,0.06)' }}>
-            <div className="px-5 py-3 flex items-center gap-2" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+          <div className="rounded-xl overflow-hidden transition-colors duration-200" style={{ background: 'var(--bg-card)', border: '1px solid var(--border-card)' }}>
+            <div className="px-5 py-3 flex items-center gap-2" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
               <AlertTriangle className="h-4 w-4" style={{ color: riskColor }} />
-              <h3 className="text-sm font-semibold text-white">What To Do Right Now</h3>
-              <span className="ml-auto text-[10px] rounded-full px-2 py-0.5" style={{ background: 'rgba(255,255,255,0.06)', color: '#94a3b8' }}>{level} scenario</span>
+              <h3 className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>What To Do Right Now</h3>
+              <span className="ml-auto text-[10px] rounded-full px-2 py-0.5" style={{ background: 'rgba(255,255,255,0.06)', color: 'var(--text-muted)' }}>{level} scenario</span>
             </div>
             <div className="p-5 space-y-3">
               {actions.map((item, i) => (
-                <div key={i} className="flex items-start gap-3 rounded-lg px-3 py-2.5" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.04)' }}>
+                <div key={i} className="flex items-start gap-3 rounded-lg px-3 py-2.5" style={{ background: 'var(--bg-card-subtle)', border: '1px solid var(--border-subtle)' }}>
                   <span className="text-lg flex-shrink-0">{item.icon}</span>
-                  <p className="text-sm text-slate-300 leading-relaxed">{item.action}</p>
+                  <p className="text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>{item.action}</p>
                   <span className="ml-auto flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full text-xs font-bold" style={{ background: `${riskColor}20`, color: riskColor }}>{i + 1}</span>
                 </div>
               ))}
@@ -151,10 +151,10 @@ export function SafetyCentrePage() {
 
           {/* Before / During / After tabs */}
           <div className="grid grid-cols-3 gap-3">
-            {[{ title: 'Before', icon: '🕐', items: BEFORE, color: '#35a98d' }, { title: 'During', icon: '⚡', items: DURING, color: '#f97316' }, { title: 'After', icon: '✓', items: AFTER, color: '#22c55e' }].map(sec => (
-              <div key={sec.title} className="rounded-xl overflow-hidden" style={{ background: 'rgba(15,41,24,0.4)', border: '1px solid rgba(255,255,255,0.06)' }}>
-                <div className="px-4 py-3" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-                  <h3 className="text-xs font-semibold text-white">{sec.icon} {sec.title} a Flood</h3>
+            {[{ title: 'Before', icon: '🕐', items: BEFORE, color: '#38bdf8' }, { title: 'During', icon: '⚡', items: DURING, color: '#f97316' }, { title: 'After', icon: '✓', items: AFTER, color: '#22c55e' }].map(sec => (
+              <div key={sec.title} className="rounded-xl overflow-hidden" style={{ background: 'var(--bg-card-subtle)', border: '1px solid var(--border-card)' }}>
+                <div className="px-4 py-3" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
+                  <h3 className="text-xs font-semibold" style={{ color: 'var(--text-primary)' }}>{sec.icon} {sec.title} a Flood</h3>
                 </div>
                 <div className="p-3 space-y-2">
                   {sec.items.map((item, i) => (
@@ -172,45 +172,45 @@ export function SafetyCentrePage() {
         {/* Right: contacts + nav */}
         <div className="space-y-4">
           {/* Emergency contacts */}
-          <div className="rounded-xl overflow-hidden" style={{ background: 'rgba(15,41,24,0.5)', border: '1px solid rgba(255,255,255,0.06)' }}>
-            <div className="px-4 py-3 flex items-center gap-2" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-              <Phone className="h-4 w-4 text-emerald-400" />
-              <h3 className="text-sm font-semibold text-white">Emergency Contacts</h3>
+          <div className="rounded-xl overflow-hidden" style={{ background: 'var(--bg-card)', border: '1px solid var(--border-card)' }}>
+            <div className="px-4 py-3 flex items-center gap-2" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
+              <Phone className="h-4 w-4 text-sky-400" />
+              <h3 className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>Emergency Contacts</h3>
             </div>
             <div className="p-3 space-y-1">
               {CONTACTS.map((c, i) => (
-                <div key={i} className="flex items-center justify-between rounded-lg px-3 py-2.5 hover:bg-white/4 transition-colors">
+                <div key={i} className="flex items-center justify-between rounded-lg px-3 py-2.5 hover:bg-slate-500/10 transition-colors">
                   <div className="flex items-center gap-2">
                     <span>{c.icon}</span>
-                    <span className="text-xs text-slate-300">{c.name}</span>
+                    <span className="text-xs" style={{ color: 'var(--text-secondary)' }}>{c.name}</span>
                   </div>
-                  <a href={`tel:${c.number}`} className="font-mono font-bold text-sm hover:text-emerald-300 transition-colors" style={{ color: '#35a98d' }}>
+                  <a href={`tel:${c.number}`} className="font-mono font-bold text-sm text-sky-400 hover:text-sky-300 transition-colors">
                     {c.number}
                   </a>
                 </div>
               ))}
             </div>
-            <div className="px-4 py-2" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-              <p className="text-[10px] text-slate-600">Numbers are illustrative. Verify with local authorities.</p>
+            <div className="px-4 py-2" style={{ borderTop: '1px solid var(--border-subtle)' }}>
+              <p className="text-[10px] text-slate-500">Numbers are illustrative. Verify with local authorities.</p>
             </div>
           </div>
 
           {/* Quick links */}
-          <div className="rounded-xl overflow-hidden" style={{ background: 'rgba(15,41,24,0.4)', border: '1px solid rgba(255,255,255,0.06)' }}>
-            <div className="px-4 py-3" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-              <h3 className="text-sm font-semibold text-white">Quick Navigation</h3>
+          <div className="rounded-xl overflow-hidden" style={{ background: 'var(--bg-card-subtle)', border: '1px solid var(--border-card)' }}>
+            <div className="px-4 py-3" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
+              <h3 className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>Quick Navigation</h3>
             </div>
             <div className="p-3 space-y-2">
               {[
                 { to: ROUTES.APP_ALERTS, label: 'View Active Alerts', color: '#ef4444' },
-                { to: ROUTES.APP_RISK_MAP, label: 'Open Risk Map', color: '#35a98d' },
+                { to: ROUTES.APP_RISK_MAP, label: 'Open Risk Map', color: '#38bdf8' },
                 { to: ROUTES.APP_PREDICTIONS, label: 'Check Predictions', color: '#f97316' },
               ].map(link => (
                 <Link
                   key={link.to}
                   to={link.to}
-                  className="flex items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium text-white hover:bg-white/6 transition-colors"
-                  style={{ border: `1px solid ${link.color}30` }}
+                  className="flex items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium transition-colors hover:bg-slate-500/10"
+                  style={{ border: `1px solid ${link.color}30`, color: 'var(--text-primary)' }}
                 >
                   {link.label}
                   <ArrowRight className="h-3.5 w-3.5" style={{ color: link.color }} />

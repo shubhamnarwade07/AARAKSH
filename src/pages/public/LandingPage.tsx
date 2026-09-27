@@ -1,252 +1,579 @@
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Shield, Map, Bell, Activity, Database, ArrowRight, ChevronRight, CloudRain, Mountain, Layers, AlertTriangle, CheckCircle, TrendingUp, Play, Globe } from 'lucide-react';
+import {
+  ArrowRight, ChevronDown, Activity, Shield, MapPin,
+  TrendingUp, Database, Map, Bell, CloudRain, Droplets,
+  Layers, Waves, CheckCircle2, ChevronRight, Wind, AlertTriangle
+} from 'lucide-react';
 import { ROUTES } from '@/lib/constants';
-import { useState } from 'react';
+import { useTheme } from '@/contexts/ThemeContext';
+import { ThemeToggle } from '@/components/ui/ThemeToggle';
 
-// ── Mock live preview data ────────────────────────────────
+// ── Live simulated sensor feed for hero card ──────────────────────────
+const HERO_TELEMETRY = [
+  { rain: 12, moisture: 61, water: 'Stable', status: 'Optimal' },
+  { rain: 14, moisture: 62, water: 'Stable', status: 'Optimal' },
+  { rain: 16, moisture: 64, water: 'Monitored', status: 'Elevating' },
+  { rain: 11, moisture: 60, water: 'Stable', status: 'Optimal' },
+];
+
+// ── Preview Locations for Intelligence Section ────────────────────────
 const PREVIEW_LOCATIONS = [
-  { name: 'Rambara', district: 'Rudraprayag', risk: 'CRITICAL', score: 0.88, trend: '↑' },
-  { name: 'Gaurikund', district: 'Rudraprayag', risk: 'HIGH', score: 0.71, trend: '↑' },
-  { name: 'Sonprayag', district: 'Rudraprayag', risk: 'HIGH', score: 0.63, trend: '→' },
-  { name: 'Agastyamuni', district: 'Rudraprayag', risk: 'MODERATE', score: 0.44, trend: '→' },
+  { id: 'rambara', name: 'Rambara', district: 'Rudraprayag', risk: 'CRITICAL', score: 0.88, rain: 112, soil: 91, water: '3.4m (+1.2m)', trend: 'Increasing ↑' },
+  { id: 'gaurikund', name: 'Gaurikund', district: 'Rudraprayag', risk: 'HIGH', score: 0.71, rain: 96, soil: 81, water: '2.8m (+0.7m)', trend: 'Increasing ↑' },
+  { id: 'sonprayag', name: 'Sonprayag', district: 'Rudraprayag', risk: 'HIGH', score: 0.63, rain: 76, soil: 69, water: '2.1m (+0.3m)', trend: 'Stable →' },
+  { id: 'agastyamuni', name: 'Agastyamuni', district: 'Rudraprayag', risk: 'MODERATE', score: 0.44, rain: 42, soil: 54, water: '1.6m (Normal)', trend: 'Stable →' },
+  { id: 'rudraprayag', name: 'Rudraprayag Town', district: 'Rudraprayag', risk: 'LOW', score: 0.22, rain: 24, soil: 42, water: '1.1m (Normal)', trend: 'Decreasing ↓' },
 ];
 
 const RISK_COLOR: Record<string, string> = {
-  CRITICAL: '#ef4444', HIGH: '#f97316', MODERATE: '#eab308', LOW: '#22c55e'
-};
-const RISK_BG: Record<string, string> = {
-  CRITICAL: 'rgba(239,68,68,0.15)', HIGH: 'rgba(249,115,22,0.12)', MODERATE: 'rgba(234,179,8,0.12)', LOW: 'rgba(34,197,94,0.1)'
+  CRITICAL: '#ef4444',
+  HIGH: '#f97316',
+  MODERATE: '#eab308',
+  LOW: '#22c55e',
 };
 
 export function LandingPage() {
-  const [activeTab, setActiveTab] = useState<'risk' | 'rainfall' | 'water'>('risk');
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
+
+  // Hero headline slide state (Slide 0: "THE MOUNTAINS SPEAK FIRST.", Slide 1: "THE LAND IS ALWAYS TELLING US SOMETHING.")
+  const [activeSlide, setActiveSlide] = useState<0 | 1>(0);
+  const [telemetryIndex, setTelemetryIndex] = useState(0);
+  const [selectedLocId, setSelectedLocId] = useState('rambara');
+  const [intelligenceTab, setIntelligenceTab] = useState<'risk' | 'rainfall' | 'soil' | 'water'>('risk');
+
+  // Cycle telemetry tick
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTelemetryIndex((prev) => (prev + 1) % HERO_TELEMETRY.length);
+    }, 4500);
+    return () => clearInterval(timer);
+  }, []);
+
+  // Ambient auto-cycle between the two hero statements every 9 seconds
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setActiveSlide((prev) => (prev === 0 ? 1 : 0));
+    }, 9000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const currentTelemetry = HERO_TELEMETRY[telemetryIndex];
+  const activeLocation = PREVIEW_LOCATIONS.find((l) => l.id === selectedLocId) ?? PREVIEW_LOCATIONS[0];
 
   return (
-    <div className="min-h-screen" style={{ background: '#f8f9f4', fontFamily: 'Inter, system-ui, sans-serif' }}>
-
-      {/* ── Navigation ─────────────────────────────── */}
-      <nav className="fixed top-0 left-0 right-0 z-50" style={{ background: 'rgba(6,15,10,0.92)', backdropFilter: 'blur(12px)', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-        <div className="mx-auto max-w-6xl px-6 flex h-14 items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg" style={{ background: 'linear-gradient(135deg, #276942, #1a6b5c)' }}>
-              <Shield className="h-4 w-4 text-white" />
+    <div
+      className="min-h-screen text-slate-100 transition-colors duration-300 selection:bg-sky-500 selection:text-white"
+      style={{
+        backgroundColor: isDark ? '#070d15' : '#f4f7fb',
+        color: isDark ? '#f8fafc' : '#0f172a',
+      }}
+    >
+      {/* ── Fixed Navigation Bar ────────────────────────────────────────── */}
+      <header
+        className="fixed top-0 left-0 right-0 z-50 transition-colors duration-300 backdrop-blur-md"
+        style={{
+          background: isDark ? 'rgba(7, 13, 21, 0.85)' : 'rgba(255, 255, 255, 0.88)',
+          borderBottom: isDark ? '1px solid rgba(56, 189, 248, 0.12)' : '1px solid rgba(203, 213, 225, 0.7)',
+        }}
+      >
+        <div className="mx-auto max-w-7xl px-6 h-18 flex items-center justify-between">
+          {/* Brand Logo */}
+          <Link to={ROUTES.LANDING} className="flex items-center gap-3 group">
+            {/* Cyan/Blue Square Logo with 'A' as in screenshot */}
+            <div
+              className="flex h-8 w-8 items-center justify-center rounded-md font-bold text-white shadow-md transition-transform duration-200 group-hover:scale-105"
+              style={{
+                background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)',
+                boxShadow: '0 2px 10px rgba(2, 132, 199, 0.35)',
+              }}
+            >
+              <span className="text-sm tracking-wider font-extrabold">A</span>
             </div>
-            <span className="font-bold text-white tracking-widest text-sm" style={{ letterSpacing: '0.15em' }}>AARAKSH</span>
-          </div>
-          <div className="hidden md:flex items-center gap-6 text-sm" style={{ color: 'rgba(255,255,255,0.5)' }}>
-            <a href="#challenge" className="hover:text-white transition-colors">The Challenge</a>
-            <a href="#how" className="hover:text-white transition-colors">How It Works</a>
-            <a href="#preview" className="hover:text-white transition-colors">Live Preview</a>
-            <a href="#impact" className="hover:text-white transition-colors">Impact</a>
-          </div>
-          <div className="flex items-center gap-3">
-            <Link to={ROUTES.LOGIN} className="text-sm font-medium transition-colors" style={{ color: 'rgba(255,255,255,0.6)' }}>Sign In</Link>
+            <span
+              className="font-bold tracking-[0.2em] text-sm uppercase transition-colors"
+              style={{ color: isDark ? '#ffffff' : '#0f172a' }}
+            >
+              AARAKSH
+            </span>
+          </Link>
+
+          {/* Navigation Links */}
+          <nav className="hidden md:flex items-center gap-9">
+            {[
+              { label: 'ABOUT', href: '#about' },
+              { label: 'HOW IT WORKS', href: '#how-it-works' },
+              { label: 'INTELLIGENCE', href: '#intelligence' },
+            ].map((link) => (
+              <a
+                key={link.label}
+                href={link.href}
+                className="text-xs font-semibold tracking-[0.16em] transition-colors duration-200"
+                style={{
+                  color: isDark ? 'rgba(241, 245, 249, 0.65)' : 'rgba(51, 65, 85, 0.75)',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.color = isDark ? '#38bdf8' : '#0284c7';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.color = isDark ? 'rgba(241, 245, 249, 0.65)' : 'rgba(51, 65, 85, 0.75)';
+                }}
+              >
+                {link.label}
+              </a>
+            ))}
+          </nav>
+
+          {/* Right Action Buttons */}
+          <div className="flex items-center gap-3.5">
+            {/* Theme Toggle Button */}
+            <ThemeToggle variant="icon" />
+
+            {/* Access AARAKSH Button */}
             <Link
               to={ROUTES.LOGIN}
-              className="flex items-center gap-1.5 rounded-lg px-4 py-2 text-sm font-semibold text-white transition-all hover:scale-105"
-              style={{ background: 'linear-gradient(135deg, #276942, #1a6b5c)' }}
+              className="rounded-lg px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] transition-all duration-200 hover:scale-[1.02]"
+              style={{
+                background: isDark ? 'rgba(14, 28, 46, 0.8)' : 'rgba(255, 255, 255, 0.95)',
+                border: isDark ? '1px solid rgba(56, 189, 248, 0.35)' : '1px solid rgba(2, 132, 199, 0.4)',
+                color: isDark ? '#f8fafc' : '#0284c7',
+                boxShadow: isDark
+                  ? '0 0 16px rgba(56, 189, 248, 0.1)'
+                  : '0 2px 8px rgba(2, 132, 199, 0.12)',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = isDark ? '#38bdf8' : '#0284c7';
+                e.currentTarget.style.background = isDark ? 'rgba(56, 189, 248, 0.12)' : 'rgba(2, 132, 199, 0.08)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = isDark ? 'rgba(56, 189, 248, 0.35)' : 'rgba(2, 132, 199, 0.4)';
+                e.currentTarget.style.background = isDark ? 'rgba(14, 28, 46, 0.8)' : 'rgba(255, 255, 255, 0.95)';
+              }}
             >
-              Access AARAKSH <ArrowRight className="h-3.5 w-3.5" />
+              ACCESS AARAKSH
             </Link>
           </div>
         </div>
-      </nav>
+      </header>
 
-      {/* ── Hero ──────────────────────────────────── */}
-      <section
-        className="relative min-h-screen flex items-end pb-20 pt-32 overflow-hidden"
-        style={{
-          background: 'linear-gradient(180deg, #020f06 0%, #061a0c 30%, #0a1208 60%, #060f0a 100%)',
-        }}
-      >
-        {/* Himalayan mountain silhouette background */}
-        <div className="absolute inset-0 overflow-hidden">
-          {/* SVG mountain silhouette */}
-          <svg className="absolute bottom-0 left-0 w-full" viewBox="0 0 1440 600" preserveAspectRatio="none">
-            <defs>
-              <linearGradient id="mtGrad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#0f2918" />
-                <stop offset="100%" stopColor="#060f0a" />
-              </linearGradient>
-              <linearGradient id="snowGrad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="rgba(255,255,255,0.15)" />
-                <stop offset="100%" stopColor="transparent" />
-              </linearGradient>
-            </defs>
-            {/* Far mountains */}
-            <polygon points="0,600 0,320 120,180 260,300 400,150 540,260 700,80 860,200 1000,120 1160,240 1300,160 1440,220 1440,600" fill="#0a1a10" opacity="0.8" />
-            {/* Mid mountains */}
-            <polygon points="0,600 0,420 100,360 200,400 340,280 500,380 680,300 820,380 960,310 1100,370 1260,290 1440,350 1440,600" fill="#0f2918" />
-            {/* Foreground terrain */}
-            <polygon points="0,600 0,520 200,480 400,510 600,460 800,500 1000,470 1200,490 1440,460 1440,600" fill="#163d24" />
-            {/* Snow caps */}
-            <polygon points="380,150 400,80 420,150" fill="rgba(255,255,255,0.12)" />
-            <polygon points="680,80 700,20 720,80" fill="rgba(255,255,255,0.15)" />
-            <polygon points="980,120 1000,55 1020,120" fill="rgba(255,255,255,0.10)" />
-          </svg>
+      {/* ── HERO SECTION ────────────────────────────────────────────────── */}
+      <section className="relative min-h-screen flex flex-col justify-between pt-28 pb-8 px-6 lg:px-12 overflow-hidden">
+        {/* Background Mountain Photo */}
+        <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+          <img
+            src={isDark ? '/mountains-dark.jpg' : '/mountains-light.jpg'}
+            alt="Himalayan Mountain Range"
+            className="w-full h-full object-cover object-center transform scale-105 transition-all duration-1000 ease-out"
+            style={{
+              filter: isDark ? 'brightness(0.72) contrast(1.15)' : 'brightness(0.92) contrast(1.05)',
+            }}
+          />
 
-          {/* Stars/ambient particles */}
-          <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at 30% 20%, rgba(53,169,141,0.08) 0%, transparent 60%), radial-gradient(ellipse at 80% 10%, rgba(6,182,212,0.06) 0%, transparent 50%)' }} />
+          {/* Atmospheric Blue Mist & Vignette Overlays */}
+          <div
+            className="absolute inset-0"
+            style={{
+              background: isDark
+                ? 'radial-gradient(ellipse at 50% 40%, rgba(7, 13, 21, 0.25) 0%, rgba(7, 13, 21, 0.82) 80%, rgba(7, 13, 21, 0.96) 100%)'
+                : 'radial-gradient(ellipse at 50% 40%, rgba(244, 247, 251, 0.15) 0%, rgba(244, 247, 251, 0.6) 80%, rgba(244, 247, 251, 0.92) 100%)',
+            }}
+          />
 
-          {/* Grid overlay */}
-          <div className="absolute inset-0" style={{
-            backgroundImage: 'linear-gradient(rgba(53,169,141,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(53,169,141,0.04) 1px, transparent 1px)',
-            backgroundSize: '60px 60px',
-          }} />
+          {/* Subtle Vertical Rain Streaks / Data Signals (as in Image 1) */}
+          <div className="absolute inset-0 overflow-hidden opacity-60">
+            <div className="rain-streak" style={{ left: '18%', top: '5%', height: '55px', animationDelay: '0s', animationDuration: '3.8s' }} />
+            <div className="rain-streak" style={{ left: '32%', top: '15%', height: '70px', animationDelay: '1.2s', animationDuration: '4.2s' }} />
+            <div className="rain-streak" style={{ left: '54%', top: '8%', height: '60px', animationDelay: '0.6s', animationDuration: '3.4s' }} />
+            <div className="rain-streak" style={{ left: '72%', top: '22%', height: '80px', animationDelay: '2.1s', animationDuration: '4.5s' }} />
+            <div className="rain-streak" style={{ left: '86%', top: '10%', height: '50px', animationDelay: '1.8s', animationDuration: '3.9s' }} />
+          </div>
         </div>
 
-        {/* Hero content */}
-        <div className="relative mx-auto max-w-6xl px-6 z-10">
-          <div className="grid lg:grid-cols-2 gap-12 items-end">
-            {/* Left: headline */}
+        {/* Floating LIVE SIGNAL DEMO Card (Top Right, as in Screenshot 2) */}
+        <div className="relative z-20 mx-auto max-w-7xl w-full flex justify-end">
+          <div
+            className="rounded-xl p-4 w-64 backdrop-blur-xl transition-all duration-300 shadow-2xl animate-fade-in"
+            style={{
+              background: isDark ? 'rgba(10, 20, 32, 0.78)' : 'rgba(255, 255, 255, 0.88)',
+              border: isDark ? '1px solid rgba(56, 189, 248, 0.2)' : '1px solid rgba(2, 132, 199, 0.25)',
+              boxShadow: isDark
+                ? '0 16px 36px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.08)'
+                : '0 12px 30px rgba(0, 0, 0, 0.08)',
+            }}
+          >
+            {/* Header row: Green dot + LIVE SIGNAL + DEMO */}
+            <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-500/20">
+              <div className="flex items-center gap-2">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+                </span>
+                <span className="text-[11px] font-bold tracking-[0.14em] uppercase" style={{ color: isDark ? '#38bdf8' : '#0284c7' }}>
+                  LIVE SIGNAL
+                </span>
+              </div>
+              <span className="text-[10px] font-semibold tracking-wider text-slate-400 uppercase">
+                DEMO
+              </span>
+            </div>
+
+            {/* Signal rows */}
+            <div className="space-y-2 text-xs">
+              <div className="flex items-center justify-between">
+                <span className="text-slate-400 font-medium">Rainfall</span>
+                <span className="font-bold tracking-tight text-sky-400">
+                  {currentTelemetry.rain} mm/hr
+                </span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-slate-400 font-medium">Soil moisture</span>
+                <span className="font-bold tracking-tight text-sky-400">
+                  {currentTelemetry.moisture}%
+                </span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-slate-400 font-medium">Water level</span>
+                <span className="font-bold tracking-tight text-sky-400">
+                  {currentTelemetry.water}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Main Hero Headline Area */}
+        <div className="relative z-10 mx-auto max-w-7xl w-full my-auto py-10">
+          <div className="max-w-4xl">
+            {/* Slide Switcher Controls */}
+            <div className="flex items-center gap-2 mb-4">
+              <button
+                type="button"
+                onClick={() => setActiveSlide(0)}
+                className="text-[11px] font-mono tracking-widest px-2.5 py-1 rounded transition-colors"
+                style={{
+                  background: activeSlide === 0 ? (isDark ? 'rgba(56, 189, 248, 0.2)' : 'rgba(2, 132, 199, 0.15)') : 'transparent',
+                  color: activeSlide === 0 ? (isDark ? '#38bdf8' : '#0284c7') : (isDark ? '#64748b' : '#94a3b8'),
+                }}
+              >
+                01 · MOUNTAINS
+              </button>
+              <span className="text-slate-500 text-xs">/</span>
+              <button
+                type="button"
+                onClick={() => setActiveSlide(1)}
+                className="text-[11px] font-mono tracking-widest px-2.5 py-1 rounded transition-colors"
+                style={{
+                  background: activeSlide === 1 ? (isDark ? 'rgba(56, 189, 248, 0.2)' : 'rgba(2, 132, 199, 0.15)') : 'transparent',
+                  color: activeSlide === 1 ? (isDark ? '#38bdf8' : '#0284c7') : (isDark ? '#64748b' : '#94a3b8'),
+                }}
+              >
+                02 · LAND SIGNALS
+              </button>
+            </div>
+
+            {/* Slide 0: THE MOUNTAINS SPEAK FIRST. (Image 2) */}
+            {activeSlide === 0 && (
+              <div className="animate-fade-in">
+                {/* Eyebrow */}
+                <p
+                  className="text-xs sm:text-sm font-semibold tracking-[0.24em] uppercase mb-6"
+                  style={{ color: isDark ? '#38bdf8' : '#0284c7' }}
+                >
+                  FLASH FLOOD INTELLIGENCE — HIMALAYAS
+                </p>
+
+                {/* Massive Editorial Headline */}
+                <h1
+                  className="font-editorial text-5xl sm:text-7xl md:text-8xl lg:text-[6.5rem] tracking-tight text-white mb-6 uppercase"
+                  style={{
+                    lineHeight: 0.95,
+                    fontFamily: 'Cormorant Garamond, Georgia, serif',
+                    color: isDark ? '#ffffff' : '#0f172a',
+                    textShadow: isDark ? '0 4px 24px rgba(0, 0, 0, 0.6)' : 'none',
+                  }}
+                >
+                  THE MOUNTAINS
+                  <br />
+                  <span
+                    className="editorial-italic font-normal lowercase tracking-normal"
+                    style={{
+                      fontStyle: 'italic',
+                      fontFamily: 'Cormorant Garamond, Georgia, serif',
+                      textTransform: 'none',
+                    }}
+                  >
+                    speak first.
+                  </span>
+                </h1>
+
+                {/* Subtitle */}
+                <p
+                  className="text-base sm:text-lg md:text-xl font-normal max-w-xl mb-9 leading-relaxed"
+                  style={{ color: isDark ? 'rgba(226, 232, 240, 0.85)' : 'rgba(51, 65, 85, 0.9)' }}
+                >
+                  We listen to the signals before the danger arrives.
+                </p>
+
+                {/* Explore Button */}
+                <div className="flex items-center gap-4">
+                  <Link
+                    to={ROUTES.LOGIN}
+                    className="inline-flex items-center gap-2.5 rounded-lg px-6 py-3.5 text-xs sm:text-sm font-bold tracking-[0.14em] uppercase text-white shadow-lg transition-all duration-200 hover:scale-105"
+                    style={{
+                      background: '#0284c7',
+                      boxShadow: '0 6px 24px rgba(2, 132, 199, 0.4)',
+                    }}
+                  >
+                    EXPLORE AARAKSH <ArrowRight className="h-4 w-4" />
+                  </Link>
+
+                  <a
+                    href="#how-it-works"
+                    className="inline-flex items-center gap-2 rounded-lg px-5 py-3.5 text-xs sm:text-sm font-semibold tracking-wider transition-all duration-200 hover:bg-white/10"
+                    style={{
+                      color: isDark ? '#f8fafc' : '#334155',
+                      border: isDark ? '1px solid rgba(255, 255, 255, 0.15)' : '1px solid rgba(203, 213, 225, 0.8)',
+                    }}
+                  >
+                    HOW IT WORKS
+                  </a>
+                </div>
+              </div>
+            )}
+
+            {/* Slide 1: THE LAND IS ALWAYS TELLING US SOMETHING. (Image 1) */}
+            {activeSlide === 1 && (
+              <div className="animate-fade-in">
+                {/* Eyebrow */}
+                <p
+                  className="text-xs sm:text-sm font-semibold tracking-[0.24em] uppercase mb-6"
+                  style={{ color: isDark ? '#38bdf8' : '#0284c7' }}
+                >
+                  ENVIRONMENTAL AWARENESS
+                </p>
+
+                {/* Massive Editorial Headline */}
+                <h1
+                  className="font-editorial text-5xl sm:text-7xl md:text-8xl lg:text-[6.2rem] tracking-tight mb-6 uppercase"
+                  style={{
+                    lineHeight: 0.95,
+                    fontFamily: 'Cormorant Garamond, Georgia, serif',
+                    color: isDark ? '#ffffff' : '#0f172a',
+                    textShadow: isDark ? '0 4px 24px rgba(0, 0, 0, 0.6)' : 'none',
+                  }}
+                >
+                  THE LAND IS
+                  <br />
+                  ALWAYS
+                  <br />
+                  <span
+                    className="editorial-italic font-normal lowercase tracking-normal"
+                    style={{
+                      fontStyle: 'italic',
+                      fontFamily: 'Cormorant Garamond, Georgia, serif',
+                      textTransform: 'none',
+                    }}
+                  >
+                    telling us
+                  </span>
+                  <br />
+                  SOMETHING.
+                </h1>
+
+                {/* Explore Button */}
+                <div className="flex items-center gap-4 mt-8">
+                  <Link
+                    to={ROUTES.LOGIN}
+                    className="inline-flex items-center gap-2.5 rounded-lg px-6 py-3.5 text-xs sm:text-sm font-bold tracking-[0.14em] uppercase text-white shadow-lg transition-all duration-200 hover:scale-105"
+                    style={{
+                      background: '#0284c7',
+                      boxShadow: '0 6px 24px rgba(2, 132, 199, 0.4)',
+                    }}
+                  >
+                    ACCESS AARAKSH <ArrowRight className="h-4 w-4" />
+                  </Link>
+
+                  <a
+                    href="#intelligence"
+                    className="inline-flex items-center gap-2 rounded-lg px-5 py-3.5 text-xs sm:text-sm font-semibold tracking-wider transition-all duration-200 hover:bg-white/10"
+                    style={{
+                      color: isDark ? '#f8fafc' : '#334155',
+                      border: isDark ? '1px solid rgba(255, 255, 255, 0.15)' : '1px solid rgba(203, 213, 225, 0.8)',
+                    }}
+                  >
+                    VIEW SENSORS
+                  </a>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Bottom Hero Metrics Bar & Scroll Indicator (Image 1 & Image 2) */}
+        <div className="relative z-10 mx-auto max-w-7xl w-full pt-8">
+          {/* Subtle Top Divider */}
+          <div
+            className="w-full mb-6"
+            style={{
+              height: '1px',
+              background: isDark
+                ? 'linear-gradient(90deg, transparent 0%, rgba(56, 189, 248, 0.3) 25%, rgba(56, 189, 248, 0.3) 75%, transparent 100%)'
+                : 'linear-gradient(90deg, transparent 0%, rgba(2, 132, 199, 0.25) 25%, rgba(2, 132, 199, 0.25) 75%, transparent 100%)',
+            }}
+          />
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-left">
+            {/* Metric 1 */}
             <div>
-              <div className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs mb-6" style={{ background: 'rgba(53,169,141,0.12)', border: '1px solid rgba(53,169,141,0.25)', color: '#35a98d' }}>
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              <p className="text-xs text-slate-400 mb-1">Soil saturation signals</p>
+              <p className="text-sm sm:text-base font-semibold text-sky-400 tracking-wide">
+                Active monitoring
+              </p>
+            </div>
+
+            {/* Metric 2 */}
+            <div>
+              <p className="text-xs text-slate-400 mb-1">River gauge stations</p>
+              <p className="text-sm sm:text-base font-semibold text-sky-400 tracking-wide">
+                12 locations
+              </p>
+            </div>
+
+            {/* Metric 3 */}
+            <div>
+              <p className="text-xs text-slate-400 mb-1">Rain gauges networked</p>
+              <p className="text-sm sm:text-base font-semibold text-sky-400 tracking-wide">
+                Rudraprayag district
+              </p>
+            </div>
+          </div>
+
+          {/* Scroll To Explore Indicator (Centered at Bottom) */}
+          <div className="flex flex-col items-center justify-center mt-10">
+            <a
+              href="#about"
+              className="group flex flex-col items-center gap-1.5 text-[11px] font-semibold tracking-[0.2em] uppercase transition-colors"
+              style={{ color: isDark ? 'rgba(255, 255, 255, 0.45)' : 'rgba(51, 65, 85, 0.6)' }}
+            >
+              <span>SCROLL TO EXPLORE</span>
+              <ChevronDown className="h-4 w-4 animate-bounce group-hover:translate-y-0.5 transition-transform" />
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* ── SECTION: THE CHALLENGE / ABOUT ──────────────────────────────── */}
+      <section
+        id="about"
+        className="py-24 px-6 lg:px-12 transition-colors duration-300 relative"
+        style={{
+          backgroundColor: isDark ? '#0a111a' : '#ffffff',
+          borderTop: isDark ? '1px solid rgba(56, 189, 248, 0.1)' : '1px solid rgba(226, 232, 240, 0.8)',
+        }}
+      >
+        <div className="mx-auto max-w-7xl">
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            <div>
+              <div className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs mb-4"
+                style={{
+                  background: isDark ? 'rgba(56, 189, 248, 0.12)' : 'rgba(2, 132, 199, 0.1)',
+                  border: isDark ? '1px solid rgba(56, 189, 248, 0.25)' : '1px solid rgba(2, 132, 199, 0.2)',
+                  color: isDark ? '#38bdf8' : '#0284c7',
+                }}
+              >
+                <span className="h-1.5 w-1.5 rounded-full bg-sky-400 animate-pulse" />
                 SIH 2026 · Problem SIH26192 · NDRF / MHA
               </div>
 
-              <h1
-                className="text-5xl md:text-6xl lg:text-7xl font-bold leading-none mb-6"
-                style={{ fontFamily: 'Playfair Display, Georgia, serif', color: 'white', lineHeight: 1.05 }}
+              <h2
+                className="font-editorial text-4xl sm:text-5xl font-normal leading-tight mb-6"
+                style={{
+                  fontFamily: 'Cormorant Garamond, Georgia, serif',
+                  color: isDark ? '#f8fafc' : '#0f172a',
+                }}
               >
-                From Data to
+                When Minutes
                 <br />
-                <span style={{ background: 'linear-gradient(135deg, #34d399 0%, #06b6d4 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-                  Lives Saved
-                </span>
-              </h1>
+                <span className="italic">Define Lives.</span>
+              </h2>
 
-              {/* Italic tagline on the side — matching reference */}
-              <div className="mb-6" style={{ borderLeft: '2px solid rgba(53,169,141,0.4)', paddingLeft: '16px' }}>
-                <p className="text-base text-slate-300 leading-relaxed">
-                  AI-powered flash flood intelligence and early warning
-                  for India's hilly regions. <span className="text-emerald-400 font-medium">Hyper-local. Real-time. Actionable.</span>
-                </p>
-              </div>
+              <p
+                className="text-base sm:text-lg leading-relaxed mb-6"
+                style={{ color: isDark ? '#94a3b8' : '#475569' }}
+              >
+                Flash floods and sudden debris flows in the steep valleys of Uttarakhand strike with devastating velocity.
+                Conventional regional forecasts lack the hyper-local precision required for mountain communities to take protective action before rivers surge.
+              </p>
 
-              <div className="flex flex-col sm:flex-row gap-3 mb-10">
-                <Link
-                  to={ROUTES.LOGIN}
-                  className="inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3.5 text-sm font-semibold text-white transition-all hover:scale-105 hover:shadow-lg"
-                  style={{ background: 'linear-gradient(135deg, #276942, #22866f)', boxShadow: '0 4px 24px rgba(34,134,111,0.3)' }}
-                >
-                  Explore the Platform <ArrowRight className="h-4 w-4" />
-                </Link>
+              <p
+                className="text-sm leading-relaxed mb-8"
+                style={{ color: isDark ? '#64748b' : '#64748b' }}
+              >
+                AARAKSH bridges this critical gap by harmonizing satellite precipitation radar, automated hydrometric stations, high-resolution digital elevation models, and predictive ML runoff intelligence into a unified, actionable surveillance system.
+              </p>
+
+              <div className="flex items-center gap-4">
                 <a
-                  href="#how"
-                  className="inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3.5 text-sm font-medium text-white transition-all hover:bg-white/8"
-                  style={{ border: '1px solid rgba(255,255,255,0.15)' }}
+                  href="#how-it-works"
+                  className="inline-flex items-center gap-2 text-sm font-semibold transition-colors"
+                  style={{ color: isDark ? '#38bdf8' : '#0284c7' }}
                 >
-                  <Play className="h-3.5 w-3.5" /> How It Works
+                  Explore System Architecture <ArrowRight className="h-4 w-4" />
                 </a>
               </div>
-
-              {/* Stats row */}
-              <div className="flex items-center gap-6">
-                {[
-                  { value: '1', label: 'Mission' },
-                  { value: '1000+', label: 'Villages (Demo)' },
-                  { value: 'Safer', label: 'Communities' },
-                ].map((s, i) => (
-                  <div key={i}>
-                    <div className="text-xl font-bold text-white" style={{ fontFamily: 'Playfair Display, serif' }}>{s.value}</div>
-                    <div className="text-xs text-slate-500">{s.label}</div>
-                  </div>
-                ))}
-                <div className="ml-auto flex items-center gap-1.5 text-xs text-slate-500">
-                  <Mountain className="h-3.5 w-3.5" />
-                  Rudraprayag, Uttarakhand
-                </div>
-              </div>
             </div>
 
-            {/* Right: live risk mini-panel */}
-            <div>
-              <div
-                className="rounded-2xl overflow-hidden"
-                style={{ background: 'rgba(6,15,10,0.85)', border: '1px solid rgba(53,169,141,0.2)', backdropFilter: 'blur(16px)', boxShadow: '0 20px 60px rgba(0,0,0,0.5)' }}
-              >
-                <div className="flex items-center justify-between px-4 py-3" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-                  <div className="flex items-center gap-2">
-                    <span className="h-2 w-2 rounded-full bg-red-500 animate-pulse" />
-                    <span className="text-xs font-semibold text-white uppercase tracking-wider">Live Risk Overview</span>
-                  </div>
-                  <span className="text-[10px] text-slate-500 rounded-full px-2 py-0.5" style={{ background: 'rgba(255,255,255,0.05)' }}>Demo Data</span>
-                </div>
-                <div className="p-4 space-y-2">
-                  {PREVIEW_LOCATIONS.map((loc, i) => (
-                    <div
-                      key={i}
-                      className="flex items-center justify-between rounded-lg px-3 py-2.5 transition-colors hover:bg-white/4"
-                      style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.04)' }}
-                    >
-                      <div>
-                        <p className="text-sm font-semibold text-white">{loc.name}</p>
-                        <p className="text-xs text-slate-500">{loc.district}, Uttarakhand</p>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <div className="text-right">
-                          <p className="text-sm font-bold" style={{ color: RISK_COLOR[loc.risk] }}>{Math.round(loc.score * 100)}%</p>
-                          <p className="text-[10px] text-slate-600">{loc.trend}</p>
-                        </div>
-                        <span
-                          className="rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide"
-                          style={{ background: RISK_BG[loc.risk], color: RISK_COLOR[loc.risk], border: `1px solid ${RISK_COLOR[loc.risk]}40` }}
-                        >
-                          {loc.risk}
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                <div className="px-4 pb-4">
-                  <div className="flex items-center gap-3 text-[10px] text-slate-600">
-                    {['Critical', 'High', 'Moderate', 'Low'].map((l, i) => (
-                      <div key={l} className="flex items-center gap-1">
-                        <span className="h-2 w-2 rounded-full" style={{ background: ['#ef4444','#f97316','#eab308','#22c55e'][i] }} />
-                        {l}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Challenge ─────────────────────────────── */}
-      <section id="challenge" className="py-24" style={{ background: '#ffffff' }}>
-        <div className="mx-auto max-w-6xl px-6">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: '#276942' }}>The Challenge</p>
-              <h2 className="text-4xl font-bold mb-6 leading-tight" style={{ fontFamily: 'Playfair Display, serif', color: '#0a1a10' }}>
-                When Minutes<br />Define Lives
-              </h2>
-              <p className="text-slate-600 leading-relaxed mb-6">
-                Flash floods and landslides in hilly regions develop rapidly, leaving very little time for response.
-                Existing early warning systems lack the hyper-local precision needed for timely action.
-              </p>
-              <a href="#how" className="inline-flex items-center gap-2 text-sm font-semibold transition-colors" style={{ color: '#276942' }}>
-                Learn More <ArrowRight className="h-4 w-4" />
-              </a>
-            </div>
+            {/* Challenges Feature Cards */}
             <div className="grid grid-cols-1 gap-4">
               {[
-                { icon: '⏱', title: 'Rapid Onset', desc: 'Flash floods can develop within hours, leaving insufficient time for conventional warning systems to respond.' },
-                { icon: '📍', title: 'Limited Local Data', desc: 'Lack of village-level risk assessment in hilly terrain leaves communities without actionable intelligence.' },
-                { icon: '🏔', title: 'High Vulnerability', desc: 'Remote communities in complex terrain face disproportionate risk with limited access to emergency response.' },
+                {
+                  icon: <CloudRain className="h-5 w-5 text-sky-400" />,
+                  title: 'Cloudburst & Rapid Inflow',
+                  desc: 'High-intensity convective cloudburst events deliver up to 100mm/hr of rainfall in isolated micro-basins, causing immediate downstream flash inundation.',
+                },
+                {
+                  icon: <Layers className="h-5 w-5 text-sky-400" />,
+                  title: 'Steep Topography & Debris Blocking',
+                  desc: 'V-shaped mountain gorges concentrate runoff exponentially. Debris blockages create unstable natural dams that fail catastrophically without warning.',
+                },
+                {
+                  icon: <Bell className="h-5 w-5 text-sky-400" />,
+                  title: 'Last-Mile Warning Bottlenecks',
+                  desc: 'Isolated pilgrims, trekkers, and remote riverside hamlets often lack cellular reception, demanding multi-tier early alerts across IVR, sirens, and community nodes.',
+                },
               ].map((item, i) => (
                 <div
                   key={i}
-                  className="flex items-start gap-4 rounded-xl p-4"
-                  style={{ background: '#f8f9f4', border: '1px solid #e8ede9' }}
+                  className="rounded-xl p-5 transition-all duration-200"
+                  style={{
+                    background: isDark ? 'rgba(15, 26, 42, 0.7)' : '#f8fafc',
+                    border: isDark ? '1px solid rgba(56, 189, 248, 0.12)' : '1px solid #e2e8f0',
+                  }}
                 >
-                  <span className="text-2xl flex-shrink-0">{item.icon}</span>
-                  <div>
-                    <h3 className="font-semibold text-slate-800 mb-1">{item.title}</h3>
-                    <p className="text-sm text-slate-500 leading-relaxed">{item.desc}</p>
+                  <div className="flex items-start gap-4">
+                    <div
+                      className="p-2.5 rounded-lg shrink-0"
+                      style={{
+                        background: isDark ? 'rgba(56, 189, 248, 0.1)' : 'rgba(2, 132, 199, 0.08)',
+                      }}
+                    >
+                      {item.icon}
+                    </div>
+                    <div>
+                      <h3
+                        className="font-semibold text-base mb-1"
+                        style={{ color: isDark ? '#f8fafc' : '#0f172a' }}
+                      >
+                        {item.title}
+                      </h3>
+                      <p
+                        className="text-xs sm:text-sm leading-relaxed"
+                        style={{ color: isDark ? '#94a3b8' : '#64748b' }}
+                      >
+                        {item.desc}
+                      </p>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -255,233 +582,489 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* ── How It Works ──────────────────────────── */}
-      <section id="how" className="py-24" style={{ background: '#f0f4f1' }}>
-        <div className="mx-auto max-w-6xl px-6">
-          <div className="text-center mb-14">
-            <p className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: '#276942' }}>How AARAKSH Works</p>
-            <h2 className="text-4xl font-bold" style={{ fontFamily: 'Playfair Display, serif', color: '#0a1a10' }}>
-              Intelligence Across Every Layer
+      {/* ── SECTION: HOW IT WORKS ───────────────────────────────────────── */}
+      <section
+        id="how-it-works"
+        className="py-24 px-6 lg:px-12 transition-colors duration-300 relative"
+        style={{
+          backgroundColor: isDark ? '#070d15' : '#f1f5f9',
+          borderTop: isDark ? '1px solid rgba(56, 189, 248, 0.1)' : '1px solid rgba(226, 232, 240, 0.8)',
+        }}
+      >
+        <div className="mx-auto max-w-7xl">
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <p
+              className="text-xs font-semibold uppercase tracking-[0.2em] mb-3"
+              style={{ color: isDark ? '#38bdf8' : '#0284c7' }}
+            >
+              SYSTEM PIPELINE
+            </p>
+            <h2
+              className="font-editorial text-4xl sm:text-5xl font-normal leading-tight mb-4"
+              style={{
+                fontFamily: 'Cormorant Garamond, Georgia, serif',
+                color: isDark ? '#f8fafc' : '#0f172a',
+              }}
+            >
+              Intelligence Across <span className="italic">Every Layer</span>
             </h2>
-            <p className="mt-4 text-slate-500 max-w-2xl mx-auto">
-              AARAKSH integrates environmental data feeds, GIS layers, and AI models to generate hyper-local
-              risk intelligence and actionable early warnings.
+            <p className="text-sm sm:text-base leading-relaxed" style={{ color: isDark ? '#94a3b8' : '#64748b' }}>
+              Four synchronized operational layers continuously gather, simulate, synthesize, and dispatch real-time hazard intelligence to save lives.
             </p>
           </div>
 
-          {/* Process steps */}
-          <div className="grid grid-cols-4 gap-4 mb-16">
+          {/* 4 Pipeline Steps */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
             {[
-              { n: '01', icon: <Database className="h-6 w-6" />, title: 'Collect', desc: 'Multi-source data: satellite, weather, terrain' },
-              { n: '02', icon: <Activity className="h-6 w-6" />, title: 'Analyse', desc: 'AI/ML models for risk prediction' },
-              { n: '03', icon: <Map className="h-6 w-6" />, title: 'Visualise', desc: 'Interactive maps and risk insights' },
-              { n: '04', icon: <Bell className="h-6 w-6" />, title: 'Alert', desc: 'Early warnings and safety guidance' },
-            ].map((step, i) => (
-              <div key={i} className="relative">
-                {i < 3 && (
-                  <div className="absolute top-8 left-[calc(100%+0.5rem)] w-4 text-center" style={{ color: '#276942', opacity: 0.4, fontSize: 20 }}>→</div>
-                )}
-                <div className="rounded-xl p-5" style={{ background: 'white', border: '1px solid #e0ebe2' }}>
-                  <span className="text-xs font-bold" style={{ color: '#276942', opacity: 0.6 }}>{step.n}</span>
-                  <div className="my-3" style={{ color: '#276942' }}>{step.icon}</div>
-                  <h3 className="font-semibold text-slate-800 mb-1">{step.title}</h3>
-                  <p className="text-xs text-slate-500">{step.desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Data sources */}
-          <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
-            {[
-              'Weather APIs', 'Satellite Data', 'Terrain / DEM', 'Hydrological Feeds', 'Historical Records', 'GIS Layers'
-            ].map((src, i) => (
-              <div key={i} className="rounded-lg px-3 py-2 text-center text-xs font-medium" style={{ background: 'white', border: '1px solid #dde8df', color: '#276942' }}>
-                {src}
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── Live Preview ──────────────────────────── */}
-      <section id="preview" className="py-24" style={{ background: '#060f0a' }}>
-        <div className="mx-auto max-w-6xl px-6">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: '#35a98d' }}>Live Preview</p>
-              <h2 className="text-4xl font-bold text-white mb-6" style={{ fontFamily: 'Playfair Display, serif' }}>
-                See Risk.<br />Understand Impact.<br />Take Action.
-              </h2>
-              <p className="text-slate-400 mb-8 leading-relaxed">
-                Explore real-time risk visualizations, environmental layers and early warnings for vulnerable regions in hilly terrain.
-              </p>
-              <Link
-                to={ROUTES.LOGIN}
-                className="inline-flex items-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold text-white transition-all hover:scale-105"
-                style={{ background: 'linear-gradient(135deg, #276942, #22866f)', boxShadow: '0 4px 24px rgba(34,134,111,0.3)' }}
+              {
+                step: '01',
+                title: 'Collect',
+                icon: <Database className="h-6 w-6 text-sky-400" />,
+                desc: 'Multi-spectral satellite telemetry, radar precipitation, automated river level gauges, and soil saturation probes across Uttarakhand.',
+              },
+              {
+                step: '02',
+                title: 'Analyse',
+                icon: <Activity className="h-6 w-6 text-sky-400" />,
+                desc: 'AI hydrological models computing catchment water balance, runoff velocities, and dynamic slope failure probabilities in real-time.',
+              },
+              {
+                step: '03',
+                title: 'Visualise',
+                icon: <Map className="h-6 w-6 text-sky-400" />,
+                desc: 'High-density GIS digital terrain mapping with live risk contours, catchment boundary overlays, and sensor health telemetry.',
+              },
+              {
+                step: '04',
+                title: 'Alert',
+                icon: <Bell className="h-6 w-6 text-sky-400" />,
+                desc: 'Multi-tiered early warning broadcast: automated SMS dispatch to district magistrates, NDRF battalions, and community sirens.',
+              },
+            ].map((st, i) => (
+              <div
+                key={i}
+                className="relative rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1 shadow-md"
+                style={{
+                  background: isDark ? 'rgba(13, 24, 38, 0.75)' : '#ffffff',
+                  border: isDark ? '1px solid rgba(56, 189, 248, 0.15)' : '1px solid #e2e8f0',
+                }}
               >
-                Open Interactive Map <Map className="h-4 w-4" />
-              </Link>
-
-              {/* Layer pills */}
-              <div className="flex gap-2 mt-6">
-                {['Risk', 'Rainfall', 'Water Level'].map((l, i) => (
-                  <button
-                    key={l}
-                    onClick={() => setActiveTab(l.toLowerCase().replace(' ', '_') as any)}
-                    className="rounded-full px-3 py-1 text-xs font-medium transition-all"
+                <div className="flex items-center justify-between mb-4">
+                  <span
+                    className="text-xs font-mono font-bold tracking-widest px-2.5 py-1 rounded"
                     style={{
-                      background: activeTab === l.toLowerCase() ? 'rgba(53,169,141,0.2)' : 'rgba(255,255,255,0.05)',
-                      color: activeTab === l.toLowerCase() ? '#35a98d' : 'rgba(255,255,255,0.4)',
-                      border: `1px solid ${activeTab === l.toLowerCase() ? 'rgba(53,169,141,0.4)' : 'rgba(255,255,255,0.08)'}`,
+                      background: isDark ? 'rgba(56, 189, 248, 0.1)' : 'rgba(2, 132, 199, 0.08)',
+                      color: isDark ? '#38bdf8' : '#0284c7',
                     }}
                   >
-                    {l}
-                  </button>
-                ))}
-              </div>
-            </div>
+                    STEP {st.step}
+                  </span>
+                  <div
+                    className="p-2 rounded-lg"
+                    style={{
+                      background: isDark ? 'rgba(56, 189, 248, 0.08)' : 'rgba(2, 132, 199, 0.06)',
+                    }}
+                  >
+                    {st.icon}
+                  </div>
+                </div>
 
-            {/* Risk panel */}
-            <div>
-              <div
-                className="rounded-2xl overflow-hidden"
-                style={{ background: 'rgba(10,26,16,0.9)', border: '1px solid rgba(53,169,141,0.15)', boxShadow: '0 20px 60px rgba(0,0,0,0.4)' }}
-              >
-                {/* Simulated map */}
-                <div
-                  className="relative h-48 flex items-center justify-center overflow-hidden"
-                  style={{ background: 'linear-gradient(180deg, #0a2015 0%, #0f2918 100%)' }}
+                <h3
+                  className="font-semibold text-lg mb-2"
+                  style={{ color: isDark ? '#f8fafc' : '#0f172a' }}
                 >
-                  <svg viewBox="0 0 400 200" className="absolute inset-0 w-full h-full opacity-30">
-                    <path d="M0,150 Q100,80 200,120 Q300,60 400,100 L400,200 L0,200 Z" fill="#163d24" />
-                    <path d="M0,170 Q80,130 160,150 Q240,110 320,140 Q360,125 400,135 L400,200 L0,200 Z" fill="#0f2918" />
-                  </svg>
-                  {PREVIEW_LOCATIONS.map((loc, i) => (
-                    <div
-                      key={i}
-                      className="absolute flex items-center gap-1.5 rounded-full px-2 py-1 text-[10px] font-semibold"
-                      style={{
-                        background: `${RISK_COLOR[loc.risk]}20`,
-                        border: `1px solid ${RISK_COLOR[loc.risk]}50`,
-                        color: RISK_COLOR[loc.risk],
-                        left: `${15 + i * 22}%`,
-                        top: `${25 + (i % 2) * 30}%`,
-                      }}
-                    >
-                      <span className="h-1.5 w-1.5 rounded-full animate-pulse" style={{ background: RISK_COLOR[loc.risk] }} />
-                      {loc.name}
-                    </div>
-                  ))}
-                  <div className="absolute bottom-2 right-2 text-[10px] text-slate-600 bg-black/40 px-2 py-1 rounded">Demo Map Preview</div>
-                </div>
-                {/* Selected location */}
-                <div className="p-4" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-                  <div className="flex items-center justify-between mb-3">
-                    <div>
-                      <p className="font-semibold text-white">Rambara</p>
-                      <p className="text-xs text-slate-500">Rudraprayag, Uttarakhand</p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-2xl font-bold" style={{ color: '#ef4444', fontFamily: 'Playfair Display, serif' }}>87%</p>
-                      <p className="text-xs" style={{ color: '#ef4444' }}>Critical Risk</p>
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-2 gap-3 text-xs">
-                    {[{ l: 'Risk Score', v: '0.87' }, { l: 'Trend', v: 'Increasing ↑' }, { l: 'Rainfall', v: '112 mm/hr' }, { l: 'Last Updated', v: '14:32' }].map(item => (
-                      <div key={item.l}>
-                        <span className="text-slate-600">{item.l}</span>
-                        <p className="text-slate-200 font-medium mt-0.5">{item.v}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+                  {st.title}
+                </h3>
+                <p
+                  className="text-xs sm:text-sm leading-relaxed"
+                  style={{ color: isDark ? '#94a3b8' : '#64748b' }}
+                >
+                  {st.desc}
+                </p>
               </div>
-            </div>
+            ))}
           </div>
-        </div>
-      </section>
 
-      {/* ── Impact ────────────────────────────────── */}
-      <section id="impact" className="py-24" style={{ background: '#ffffff' }}>
-        <div className="mx-auto max-w-6xl px-6">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: '#276942' }}>Our Impact</p>
-              <h2 className="text-4xl font-bold mb-4" style={{ fontFamily: 'Playfair Display, serif', color: '#0a1a10' }}>
-                Building<br />Disaster-Resilient<br />Communities
-              </h2>
-              <p className="text-slate-500 mb-8 leading-relaxed">
-                Technology alone doesn't save lives. Timely information and the right action do.
-              </p>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
+          {/* Integrated Data Ingestion Badges */}
+          <div
+            className="rounded-xl p-6"
+            style={{
+              background: isDark ? 'rgba(10, 18, 30, 0.6)' : '#ffffff',
+              border: isDark ? '1px solid rgba(56, 189, 248, 0.1)' : '1px solid #e2e8f0',
+            }}
+          >
+            <p className="text-center text-xs font-semibold uppercase tracking-[0.16em] mb-4" style={{ color: isDark ? '#64748b' : '#94a3b8' }}>
+              Integrated Data Sources & Hydrological Protocols
+            </p>
+            <div className="flex flex-wrap items-center justify-center gap-3">
               {[
-                { val: '10', label: 'Monitored Locations', sub: '(Demo Data)' },
-                { val: '13', label: 'Data Sources', sub: '(APIs & Databases)' },
-                { val: '3', label: 'Active Alerts', sub: '(Demo Data)' },
-                { val: '24/7', label: 'Monitoring', sub: '(Prototype)' },
-              ].map((s, i) => (
-                <div key={i} className="rounded-xl p-6" style={{ background: '#f0f4f1', border: '1px solid #dde8df' }}>
-                  <div className="text-3xl font-bold mb-1" style={{ fontFamily: 'Playfair Display, serif', color: '#0f2918' }}>{s.val}</div>
-                  <div className="text-sm font-medium text-slate-700">{s.label}</div>
-                  <div className="text-xs text-slate-400 mt-0.5">{s.sub}</div>
-                </div>
+                'IMD Doppler Weather Radar',
+                'NASA GPM Satellite Precipitation',
+                'CWC Hydro-Meteorological Gauges',
+                'Survey of India 30m DEM',
+                'Disaster Management Authority GIS',
+                'IoT Mesh Basin Sensors',
+              ].map((src) => (
+                <span
+                  key={src}
+                  className="rounded-lg px-3.5 py-1.5 text-xs font-medium"
+                  style={{
+                    background: isDark ? 'rgba(56, 189, 248, 0.06)' : 'rgba(2, 132, 199, 0.05)',
+                    border: isDark ? '1px solid rgba(56, 189, 248, 0.15)' : '1px solid rgba(2, 132, 199, 0.15)',
+                    color: isDark ? '#cbd5e1' : '#334155',
+                  }}
+                >
+                  {src}
+                </span>
               ))}
             </div>
           </div>
         </div>
       </section>
 
-      {/* ── Mission Quote ─────────────────────────── */}
-      <section className="py-20" style={{ background: '#0a1a10' }}>
-        <div className="mx-auto max-w-3xl px-6 text-center">
-          <div className="text-5xl mb-6" style={{ color: 'rgba(53,169,141,0.3)', fontFamily: 'Playfair Display, serif' }}>❝</div>
-          <p className="text-2xl font-medium text-white mb-4" style={{ fontFamily: 'Playfair Display, serif', lineHeight: 1.4 }}>
-            Technology alone doesn't save lives.<br />Timely information and the right action do.
-          </p>
-          <p className="text-sm font-bold tracking-widest" style={{ color: '#35a98d', letterSpacing: '0.2em' }}>AARAKSH</p>
-        </div>
-      </section>
-
-      {/* ── CTA ───────────────────────────────────── */}
-      <section className="py-20" style={{ background: '#f0f4f1', borderTop: '1px solid #dde8df' }}>
-        <div className="mx-auto max-w-6xl px-6">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: '#276942' }}>Be Part of a Safer Tomorrow</p>
-              <h2 className="text-4xl font-bold mb-4" style={{ fontFamily: 'Playfair Display, serif', color: '#0a1a10' }}>
-                Explore AARAKSH
-              </h2>
-              <p className="text-slate-500 mb-8">
-                Access the platform, explore real-time insights, and see how data can help build safer, stronger communities.
+      {/* ── SECTION: INTELLIGENCE / LIVE PREVIEW ────────────────────────── */}
+      <section
+        id="intelligence"
+        className="py-24 px-6 lg:px-12 transition-colors duration-300 relative"
+        style={{
+          backgroundColor: isDark ? '#0a111a' : '#ffffff',
+          borderTop: isDark ? '1px solid rgba(56, 189, 248, 0.1)' : '1px solid rgba(226, 232, 240, 0.8)',
+        }}
+      >
+        <div className="mx-auto max-w-7xl">
+          <div className="grid lg:grid-cols-12 gap-10 items-center">
+            {/* Left Column: Context & Controls */}
+            <div className="lg:col-span-5">
+              <p
+                className="text-xs font-semibold uppercase tracking-[0.2em] mb-3"
+                style={{ color: isDark ? '#38bdf8' : '#0284c7' }}
+              >
+                LIVE INTELLIGENCE
               </p>
-              <div className="flex gap-4">
-                <Link
-                  to={ROUTES.LOGIN}
-                  className="inline-flex items-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold text-white transition-all hover:scale-105"
-                  style={{ background: 'linear-gradient(135deg, #276942, #22866f)' }}
-                >
-                  Access AARAKSH <ArrowRight className="h-4 w-4" />
-                </Link>
-                <a
-                  href="#how"
-                  className="inline-flex items-center gap-2 rounded-xl px-6 py-3 text-sm font-medium text-slate-700 hover:bg-white transition-all"
-                  style={{ border: '1px solid #cbd5e1' }}
-                >
-                  Learn More
-                </a>
+              <h2
+                className="font-editorial text-4xl sm:text-5xl font-normal leading-tight mb-4"
+                style={{
+                  fontFamily: 'Cormorant Garamond, Georgia, serif',
+                  color: isDark ? '#f8fafc' : '#0f172a',
+                }}
+              >
+                See Risk.
+                <br />
+                Understand Impact.
+                <br />
+                <span className="italic">Take Action.</span>
+              </h2>
+              <p
+                className="text-sm leading-relaxed mb-6"
+                style={{ color: isDark ? '#94a3b8' : '#64748b' }}
+              >
+                Interact with real-time risk predictions across the vulnerable Mandakini and Alaknanda river corridors. Select any monitoring station to inspect live soil moisture and rainfall.
+              </p>
+
+              {/* Layer Selection Buttons */}
+              <div className="mb-6">
+                <p className="text-xs text-slate-500 uppercase tracking-wider mb-2 font-medium">
+                  Active Display Layer
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {[
+                    { id: 'risk', label: 'Composite Risk' },
+                    { id: 'rainfall', label: 'Precipitation' },
+                    { id: 'soil', label: 'Soil Saturation' },
+                    { id: 'water', label: 'River Discharge' },
+                  ].map((tab) => (
+                    <button
+                      key={tab.id}
+                      onClick={() => setIntelligenceTab(tab.id as any)}
+                      className="rounded-full px-3.5 py-1.5 text-xs font-semibold tracking-wide transition-all"
+                      style={{
+                        background:
+                          intelligenceTab === tab.id
+                            ? isDark
+                              ? 'rgba(56, 189, 248, 0.2)'
+                              : 'rgba(2, 132, 199, 0.15)'
+                            : isDark
+                            ? 'rgba(255, 255, 255, 0.05)'
+                            : '#f1f5f9',
+                        color:
+                          intelligenceTab === tab.id
+                            ? isDark
+                              ? '#38bdf8'
+                              : '#0284c7'
+                            : isDark
+                            ? '#94a3b8'
+                            : '#64748b',
+                        border:
+                          intelligenceTab === tab.id
+                            ? isDark
+                              ? '1px solid rgba(56, 189, 248, 0.4)'
+                              : '1px solid rgba(2, 132, 199, 0.3)'
+                            : isDark
+                            ? '1px solid rgba(255, 255, 255, 0.08)'
+                            : '1px solid #e2e8f0',
+                      }}
+                    >
+                      {tab.label}
+                    </button>
+                  ))}
+                </div>
               </div>
+
+              {/* Station Selection Pills */}
+              <div className="space-y-2 mb-8">
+                <p className="text-xs text-slate-500 uppercase tracking-wider font-medium">
+                  Monitored Catchment Locations
+                </p>
+                <div className="grid grid-cols-2 gap-2">
+                  {PREVIEW_LOCATIONS.map((loc) => {
+                    const isSelected = loc.id === selectedLocId;
+                    return (
+                      <button
+                        key={loc.id}
+                        type="button"
+                        onClick={() => setSelectedLocId(loc.id)}
+                        className="flex items-center justify-between rounded-lg p-2.5 text-left text-xs font-medium transition-all"
+                        style={{
+                          background: isSelected
+                            ? isDark
+                              ? 'rgba(56, 189, 248, 0.15)'
+                              : 'rgba(2, 132, 199, 0.12)'
+                            : isDark
+                            ? 'rgba(255, 255, 255, 0.03)'
+                            : '#f8fafc',
+                          border: isSelected
+                            ? isDark
+                              ? '1px solid rgba(56, 189, 248, 0.4)'
+                              : '1px solid rgba(2, 132, 199, 0.4)'
+                            : isDark
+                            ? '1px solid rgba(255, 255, 255, 0.06)'
+                            : '1px solid #e2e8f0',
+                        }}
+                      >
+                        <span style={{ color: isSelected ? (isDark ? '#f8fafc' : '#0284c7') : (isDark ? '#cbd5e1' : '#334155') }}>
+                          {loc.name}
+                        </span>
+                        <span
+                          className="text-[10px] font-bold px-1.5 py-0.5 rounded"
+                          style={{
+                            background: `${RISK_COLOR[loc.risk]}18`,
+                            color: RISK_COLOR[loc.risk],
+                          }}
+                        >
+                          {loc.risk[0]}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <Link
+                to={ROUTES.LOGIN}
+                className="inline-flex items-center gap-2 rounded-xl px-5 py-3 text-xs sm:text-sm font-semibold text-white shadow-md transition-all hover:scale-105"
+                style={{
+                  background: '#0284c7',
+                  boxShadow: '0 4px 18px rgba(2, 132, 199, 0.35)',
+                }}
+              >
+                Open Full GIS Command Center <ArrowRight className="h-4 w-4" />
+              </Link>
             </div>
-            <div className="flex items-center justify-center">
-              <div className="text-center" style={{ fontFamily: 'Playfair Display, serif' }}>
-                <p className="text-4xl font-bold" style={{ color: '#0f2918' }}>Safer Hills</p>
-                <p className="text-3xl font-bold mt-1" style={{ color: '#276942' }}>Stronger India</p>
-                <div className="flex justify-center gap-1 mt-3">
-                  <span className="h-2 w-8 rounded-full" style={{ background: '#ff9933' }} />
-                  <span className="h-2 w-8 rounded-full bg-white border border-slate-200" />
-                  <span className="h-2 w-8 rounded-full" style={{ background: '#138808' }} />
+
+            {/* Right Column: Live Interactive Simulation Card */}
+            <div className="lg:col-span-7">
+              <div
+                className="rounded-2xl overflow-hidden shadow-2xl backdrop-blur-xl transition-all"
+                style={{
+                  background: isDark ? 'rgba(13, 24, 38, 0.85)' : '#ffffff',
+                  border: isDark ? '1px solid rgba(56, 189, 248, 0.18)' : '1px solid #e2e8f0',
+                }}
+              >
+                {/* Simulated GIS Topographic Map Canvas */}
+                <div
+                  className="relative h-64 sm:h-72 overflow-hidden flex items-center justify-center"
+                  style={{
+                    background: isDark
+                      ? 'linear-gradient(180deg, #091422 0%, #0d1e33 100%)'
+                      : 'linear-gradient(180deg, #e2e8f0 0%, #cbd5e1 100%)',
+                  }}
+                >
+                  {/* Contour Lines Graphic */}
+                  <svg
+                    viewBox="0 0 600 300"
+                    className="absolute inset-0 w-full h-full opacity-25"
+                    preserveAspectRatio="none"
+                  >
+                    <path d="M0,180 Q150,110 300,160 T600,130 L600,300 L0,300 Z" fill="#0284c7" />
+                    <path d="M0,220 Q200,160 400,210 T600,190 L600,300 L0,300 Z" fill="#0369a1" />
+                    <path d="M0,250 Q250,200 450,240 T600,220 L600,300 L0,300 Z" fill="#0c4a6e" />
+                  </svg>
+
+                  {/* Station Radar Pings on Map */}
+                  {PREVIEW_LOCATIONS.map((loc, idx) => {
+                    const isSelected = loc.id === selectedLocId;
+                    const coords = [
+                      { left: '22%', top: '28%' },
+                      { left: '42%', top: '44%' },
+                      { left: '60%', top: '34%' },
+                      { left: '78%', top: '56%' },
+                      { left: '50%', top: '72%' },
+                    ][idx];
+
+                    return (
+                      <button
+                        key={loc.id}
+                        type="button"
+                        onClick={() => setSelectedLocId(loc.id)}
+                        className="absolute transform -translate-x-1/2 -translate-y-1/2 group cursor-pointer transition-transform hover:scale-125 z-10"
+                        style={{ ...coords }}
+                      >
+                        <span className="relative flex h-5 w-5 items-center justify-center">
+                          {isSelected && (
+                            <span
+                              className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75"
+                              style={{ backgroundColor: RISK_COLOR[loc.risk] }}
+                            />
+                          )}
+                          <span
+                            className="relative inline-flex rounded-full h-3.5 w-3.5 border-2"
+                            style={{
+                              backgroundColor: RISK_COLOR[loc.risk],
+                              borderColor: isSelected ? '#ffffff' : 'rgba(255,255,255,0.7)',
+                              boxShadow: isSelected ? `0 0 12px ${RISK_COLOR[loc.risk]}` : 'none',
+                            }}
+                          />
+                        </span>
+                        <span
+                          className="absolute left-6 top-0 text-[10px] font-semibold whitespace-nowrap px-1.5 py-0.5 rounded shadow-sm"
+                          style={{
+                            background: isDark ? 'rgba(7, 13, 21, 0.9)' : 'rgba(255, 255, 255, 0.95)',
+                            color: isDark ? '#ffffff' : '#0f172a',
+                            border: isDark ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid #cbd5e1',
+                          }}
+                        >
+                          {loc.name}
+                        </span>
+                      </button>
+                    );
+                  })}
+
+                  {/* Top Bar on Map */}
+                  <div className="absolute top-3 left-3 flex items-center gap-2">
+                    <span className="flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+                    <span className="text-[11px] font-mono uppercase tracking-wider text-slate-400 bg-black/40 px-2 py-0.5 rounded">
+                      GIS RADAR LAYER: {intelligenceTab.toUpperCase()}
+                    </span>
+                  </div>
+
+                  <div className="absolute bottom-3 right-3 text-[10px] font-mono text-slate-400 bg-black/40 px-2 py-0.5 rounded">
+                    Rudraprayag Valley Catchment
+                  </div>
+                </div>
+
+                {/* Selected Station Deep Telemetry Card */}
+                <div className="p-6">
+                  <div className="flex items-center justify-between pb-4 mb-4 border-b border-slate-500/15">
+                    <div>
+                      <h4 className="text-xl font-bold font-editorial" style={{ color: isDark ? '#f8fafc' : '#0f172a' }}>
+                        {activeLocation.name}
+                      </h4>
+                      <p className="text-xs text-slate-400">
+                        {activeLocation.district} District · Elevation 1,982m MSL
+                      </p>
+                    </div>
+
+                    <div className="text-right">
+                      <div className="flex items-center justify-end gap-2">
+                        <span
+                          className="text-2xl font-bold font-mono"
+                          style={{ color: RISK_COLOR[activeLocation.risk] }}
+                        >
+                          {Math.round(activeLocation.score * 100)}%
+                        </span>
+                        <span
+                          className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded"
+                          style={{
+                            background: `${RISK_COLOR[activeLocation.risk]}20`,
+                            color: RISK_COLOR[activeLocation.risk],
+                            border: `1px solid ${RISK_COLOR[activeLocation.risk]}40`,
+                          }}
+                        >
+                          {activeLocation.risk}
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-slate-400 font-mono mt-0.5">
+                        Trend: {activeLocation.trend}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* 4 Sensor Telemetry Readouts */}
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                    <div
+                      className="p-3 rounded-xl"
+                      style={{
+                        background: isDark ? 'rgba(10, 18, 30, 0.6)' : '#f8fafc',
+                        border: isDark ? '1px solid rgba(56, 189, 248, 0.1)' : '1px solid #e2e8f0',
+                      }}
+                    >
+                      <div className="flex items-center gap-1.5 text-xs text-slate-400 mb-1">
+                        <CloudRain className="h-3.5 w-3.5 text-sky-400" />
+                        <span>Precipitation</span>
+                      </div>
+                      <p className="text-base font-bold text-sky-400 font-mono">
+                        {activeLocation.rain} <span className="text-xs font-normal text-slate-400">mm/hr</span>
+                      </p>
+                    </div>
+
+                    <div
+                      className="p-3 rounded-xl"
+                      style={{
+                        background: isDark ? 'rgba(10, 18, 30, 0.6)' : '#f8fafc',
+                        border: isDark ? '1px solid rgba(56, 189, 248, 0.1)' : '1px solid #e2e8f0',
+                      }}
+                    >
+                      <div className="flex items-center gap-1.5 text-xs text-slate-400 mb-1">
+                        <Droplets className="h-3.5 w-3.5 text-sky-400" />
+                        <span>Soil Saturation</span>
+                      </div>
+                      <p className="text-base font-bold text-sky-400 font-mono">
+                        {activeLocation.soil}%
+                      </p>
+                    </div>
+
+                    <div
+                      className="p-3 rounded-xl"
+                      style={{
+                        background: isDark ? 'rgba(10, 18, 30, 0.6)' : '#f8fafc',
+                        border: isDark ? '1px solid rgba(56, 189, 248, 0.1)' : '1px solid #e2e8f0',
+                      }}
+                    >
+                      <div className="flex items-center gap-1.5 text-xs text-slate-400 mb-1">
+                        <Waves className="h-3.5 w-3.5 text-sky-400" />
+                        <span>River Gauge</span>
+                      </div>
+                      <p className="text-sm font-bold text-sky-400 font-mono truncate">
+                        {activeLocation.water}
+                      </p>
+                    </div>
+
+                    <div
+                      className="p-3 rounded-xl"
+                      style={{
+                        background: isDark ? 'rgba(10, 18, 30, 0.6)' : '#f8fafc',
+                        border: isDark ? '1px solid rgba(56, 189, 248, 0.1)' : '1px solid #e2e8f0',
+                      }}
+                    >
+                      <div className="flex items-center gap-1.5 text-xs text-slate-400 mb-1">
+                        <Activity className="h-3.5 w-3.5 text-emerald-400" />
+                        <span>Telemetry</span>
+                      </div>
+                      <p className="text-sm font-bold text-emerald-400 font-mono">
+                        HEALTHY
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -489,32 +1072,175 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* ── Footer ────────────────────────────────── */}
-      <footer
-        className="py-10"
-        style={{ background: '#060f0a', borderTop: '1px solid rgba(255,255,255,0.06)' }}
+      {/* ── SECTION: MISSION QUOTE ──────────────────────────────────────── */}
+      <section
+        className="py-24 px-6 relative overflow-hidden text-center"
+        style={{
+          background: isDark ? '#060b12' : '#0a111a',
+          color: '#ffffff',
+        }}
       >
-        <div className="mx-auto max-w-6xl px-6">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-            <div className="flex items-center gap-2.5">
-              <div className="flex h-7 w-7 items-center justify-center rounded-lg" style={{ background: 'linear-gradient(135deg, #276942, #1a6b5c)' }}>
-                <Shield className="h-3.5 w-3.5 text-white" />
+        <div className="mx-auto max-w-4xl relative z-10">
+          <div
+            className="text-6xl font-editorial opacity-30 mb-4"
+            style={{ color: '#38bdf8' }}
+          >
+            “
+          </div>
+
+          <p
+            className="font-editorial text-2xl sm:text-4xl md:text-5xl font-normal leading-snug mb-8"
+            style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }}
+          >
+            Technology alone doesn’t save lives.
+            <br />
+            <span className="italic" style={{ color: '#38bdf8' }}>
+              Timely information and the right action do.
+            </span>
+          </p>
+
+          <div className="flex items-center justify-center gap-3">
+            <div
+              className="flex h-6 w-6 items-center justify-center rounded font-bold text-white text-xs"
+              style={{ background: '#0284c7' }}
+            >
+              A
+            </div>
+            <span className="font-bold tracking-[0.25em] text-xs uppercase text-slate-400">
+              AARAKSH · SIH 2026 PROTOTYPE
+            </span>
+          </div>
+        </div>
+      </section>
+
+      {/* ── SECTION: CALL TO ACTION ─────────────────────────────────────── */}
+      <section
+        className="py-20 px-6 lg:px-12 transition-colors duration-300 relative"
+        style={{
+          backgroundColor: isDark ? '#070d15' : '#f4f7fb',
+          borderTop: isDark ? '1px solid rgba(56, 189, 248, 0.1)' : '1px solid rgba(226, 232, 240, 0.8)',
+        }}
+      >
+        <div className="mx-auto max-w-7xl">
+          <div
+            className="rounded-3xl p-8 sm:p-14 text-center sm:text-left grid lg:grid-cols-2 gap-10 items-center overflow-hidden relative shadow-xl"
+            style={{
+              background: isDark
+                ? 'linear-gradient(135deg, rgba(13, 24, 38, 0.95) 0%, rgba(9, 18, 30, 0.95) 100%)'
+                : 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
+              border: isDark ? '1px solid rgba(56, 189, 248, 0.2)' : '1px solid #cbd5e1',
+            }}
+          >
+            <div>
+              <p
+                className="text-xs font-semibold uppercase tracking-[0.2em] mb-3"
+                style={{ color: isDark ? '#38bdf8' : '#0284c7' }}
+              >
+                SAFER HILLS · STRONGER NATION
+              </p>
+              <h2
+                className="font-editorial text-3xl sm:text-5xl font-normal leading-tight mb-4"
+                style={{
+                  fontFamily: 'Cormorant Garamond, Georgia, serif',
+                  color: isDark ? '#f8fafc' : '#0f172a',
+                }}
+              >
+                Be Part of a <span className="italic">Safer Tomorrow</span>
+              </h2>
+              <p
+                className="text-sm sm:text-base leading-relaxed mb-8 max-w-lg"
+                style={{ color: isDark ? '#94a3b8' : '#64748b' }}
+              >
+                Explore live hazard simulations, test predictive warning protocols, and evaluate our early warning architecture designed for the Himalayas.
+              </p>
+
+              <div className="flex flex-wrap gap-4 justify-center sm:justify-start">
+                <Link
+                  to={ROUTES.LOGIN}
+                  className="inline-flex items-center gap-2 rounded-xl px-6 py-3.5 text-xs sm:text-sm font-bold tracking-[0.12em] uppercase text-white shadow-lg transition-all duration-200 hover:scale-105"
+                  style={{
+                    background: '#0284c7',
+                    boxShadow: '0 4px 20px rgba(2, 132, 199, 0.4)',
+                  }}
+                >
+                  ACCESS PLATFORM <ArrowRight className="h-4 w-4" />
+                </Link>
+
+                <Link
+                  to={ROUTES.REGISTER}
+                  className="inline-flex items-center gap-2 rounded-xl px-5 py-3.5 text-xs sm:text-sm font-semibold tracking-wider transition-all duration-200 hover:bg-white/10"
+                  style={{
+                    color: isDark ? '#f8fafc' : '#334155',
+                    border: isDark ? '1px solid rgba(255, 255, 255, 0.2)' : '1px solid #cbd5e1',
+                  }}
+                >
+                  CREATE ACCOUNT
+                </Link>
               </div>
-              <div>
-                <div className="text-sm font-bold text-white tracking-widest">AARAKSH</div>
-                <div className="text-[10px] text-slate-600">SIH 2026 · Problem SIH26192</div>
+            </div>
+
+            <div className="flex flex-col items-center justify-center text-center p-6">
+              <div
+                className="font-editorial text-4xl sm:text-5xl font-bold mb-2 tracking-tight"
+                style={{ color: isDark ? '#f8fafc' : '#0f172a' }}
+              >
+                Safer Hills
+              </div>
+              <div
+                className="font-editorial text-3xl sm:text-4xl italic font-normal mb-5"
+                style={{ color: isDark ? '#38bdf8' : '#0284c7' }}
+              >
+                Stronger India
+              </div>
+              <div className="flex justify-center gap-1.5">
+                <span className="h-1.5 w-10 rounded-full" style={{ background: '#ff9933' }} />
+                <span className="h-1.5 w-10 rounded-full bg-white border border-slate-300" />
+                <span className="h-1.5 w-10 rounded-full" style={{ background: '#138808' }} />
               </div>
             </div>
-            <div className="flex gap-6 text-xs text-slate-600">
-              <a href="#challenge" className="hover:text-slate-400 transition-colors">Home</a>
-              <a href="#how" className="hover:text-slate-400 transition-colors">How It Works</a>
-              <a href="#impact" className="hover:text-slate-400 transition-colors">Impact</a>
-              <Link to={ROUTES.LOGIN} className="hover:text-slate-400 transition-colors">Access</Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ── FOOTER ──────────────────────────────────────────────────────── */}
+      <footer
+        className="py-12 px-6 lg:px-12 transition-colors duration-300 relative"
+        style={{
+          backgroundColor: isDark ? '#05090f' : '#ffffff',
+          borderTop: isDark ? '1px solid rgba(56, 189, 248, 0.1)' : '1px solid #e2e8f0',
+        }}
+      >
+        <div className="mx-auto max-w-7xl flex flex-col md:flex-row items-center justify-between gap-8">
+          {/* Logo & Info */}
+          <div className="flex items-center gap-3">
+            <div
+              className="flex h-8 w-8 items-center justify-center rounded-md font-bold text-white text-sm"
+              style={{ background: '#0284c7' }}
+            >
+              A
             </div>
-            <div className="text-xs text-slate-700">
-              <p>© 2026 AARAKSH — NeuroNauts Team</p>
-              <p className="mt-0.5" style={{ color: '#276942' }}>Built for a Safer, Stronger India</p>
+            <div>
+              <p className="text-sm font-bold tracking-[0.2em] uppercase" style={{ color: isDark ? '#f8fafc' : '#0f172a' }}>
+                AARAKSH
+              </p>
+              <p className="text-[11px] text-slate-500">
+                Flash Flood Intelligence Platform · SIH 2026
+              </p>
             </div>
+          </div>
+
+          {/* Nav Links */}
+          <div className="flex flex-wrap gap-8 text-xs font-semibold tracking-wider text-slate-400">
+            <a href="#about" className="hover:text-sky-400 transition-colors">ABOUT</a>
+            <a href="#how-it-works" className="hover:text-sky-400 transition-colors">HOW IT WORKS</a>
+            <a href="#intelligence" className="hover:text-sky-400 transition-colors">INTELLIGENCE</a>
+            <Link to={ROUTES.LOGIN} className="hover:text-sky-400 transition-colors">ACCESS</Link>
+          </div>
+
+          {/* Theme switch in footer + copyright */}
+          <div className="flex items-center gap-4 text-xs text-slate-500">
+            <ThemeToggle variant="pill" />
+            <span>© 2026 Team NeuroNauts</span>
           </div>
         </div>
       </footer>

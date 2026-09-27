@@ -27,8 +27,8 @@ const RISK_COLORS: Record<RiskLevel, string> = {
 };
 
 const CARD = {
-  background: 'rgba(15,41,24,0.5)',
-  border: '1px solid rgba(255,255,255,0.07)',
+  background: 'var(--bg-card)',
+  border: '1px solid var(--border-card)',
   borderRadius: '12px',
   overflow: 'hidden' as const,
 };
@@ -37,7 +37,7 @@ const CARD_HEADER = {
   alignItems: 'center' as const,
   justifyContent: 'space-between' as const,
   padding: '12px 16px',
-  borderBottom: '1px solid rgba(255,255,255,0.06)',
+  borderBottom: '1px solid var(--border-subtle)',
 };
 
 // ── Environmental Signal Card ────────────────────────────
@@ -48,8 +48,8 @@ function EnvSignal({
 }) {
   return (
     <div
-      className="rounded-xl p-4 flex flex-col gap-2"
-      style={{ background: 'rgba(15,41,24,0.4)', border: '1px solid rgba(255,255,255,0.06)' }}
+      className="rounded-xl p-4 flex flex-col gap-2 transition-colors duration-200"
+      style={{ background: 'var(--bg-card-subtle)', border: '1px solid var(--border-card)' }}
     >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
@@ -150,8 +150,8 @@ export function DashboardPage() {
 
       {/* Scenario selector */}
       <div
-        className="flex flex-wrap items-center gap-2 rounded-xl px-4 py-3"
-        style={{ background: 'rgba(15,41,24,0.4)', border: '1px solid rgba(255,255,255,0.06)' }}
+        className="flex flex-wrap items-center gap-2 rounded-xl px-4 py-3 transition-colors duration-200"
+        style={{ background: 'var(--bg-card-subtle)', border: '1px solid var(--border-subtle)' }}
       >
         <span className="text-xs text-slate-500 font-semibold uppercase tracking-wider">Demo Scenario:</span>
         {([
@@ -194,22 +194,22 @@ export function DashboardPage() {
       {/* Top row: summary stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[
-          { label: 'Monitored Locations', value: MOCK_LOCATIONS.length.toString(), sub: 'Demo dataset', color: '#35a98d', icon: <Map className="h-4 w-4" /> },
+          { label: 'Monitored Locations', value: MOCK_LOCATIONS.length.toString(), sub: 'Demo dataset', color: '#38bdf8', icon: <Map className="h-4 w-4" /> },
           { label: 'High / Critical', value: highRisk.length.toString(), sub: 'Active threat', color: '#ef4444', icon: <AlertTriangle className="h-4 w-4" /> },
           { label: 'Active Alerts', value: activeAlerts.length.toString(), sub: 'Require action', color: '#f97316', icon: <Activity className="h-4 w-4" /> },
           { label: 'Risk Level', value: currentScenario.riskLevel, sub: currentScenario.label, color: primaryRiskColor, icon: <TrendingUp className="h-4 w-4" /> },
         ].map((stat, i) => (
           <div
             key={i}
-            className="rounded-xl px-4 py-4"
-            style={{ background: 'rgba(15,41,24,0.5)', border: '1px solid rgba(255,255,255,0.07)' }}
+            className="rounded-xl px-4 py-4 transition-colors duration-200"
+            style={{ background: 'var(--bg-card)', border: '1px solid var(--border-card)' }}
           >
             <div className="flex items-start justify-between mb-2">
               <span style={{ color: stat.color }}>{stat.icon}</span>
-              <span className="text-[10px] text-slate-600 uppercase tracking-wider">{stat.sub}</span>
+              <span className="text-[10px] text-slate-500 uppercase tracking-wider">{stat.sub}</span>
             </div>
-            <div className="text-2xl font-bold text-white" style={{ fontFamily: 'Playfair Display, serif', color: stat.color }}>{stat.value}</div>
-            <div className="text-xs text-slate-500 mt-1">{stat.label}</div>
+            <div className="text-2xl font-bold font-editorial" style={{ color: stat.color }}>{stat.value}</div>
+            <div className="text-xs text-slate-400 mt-1">{stat.label}</div>
           </div>
         ))}
       </div>

@@ -83,11 +83,11 @@ export function LocationsPage() {
       ) : displayLocations.length === 0 ? (
         <div
           className="rounded-xl py-16 text-center"
-          style={{ background: 'rgba(15,41,24,0.3)', border: '1px dashed rgba(255,255,255,0.1)' }}
+          style={{ background: 'var(--bg-card-subtle)', border: '1px dashed var(--border-subtle)' }}
         >
-          <MapPin className="h-8 w-8 mx-auto mb-3 text-slate-700" />
+          <MapPin className="h-8 w-8 mx-auto mb-3 text-slate-500" />
           <p className="text-sm text-slate-500">No saved locations yet.</p>
-          <button onClick={() => setTab('all')} className="mt-2 text-sm font-medium" style={{ color: '#35a98d' }}>
+          <button onClick={() => setTab('all')} className="mt-2 text-sm font-medium text-sky-400">
             Browse all locations
           </button>
         </div>
@@ -101,16 +101,16 @@ export function LocationsPage() {
             return (
               <div
                 key={loc.id}
-                className="rounded-xl flex flex-col hover:brightness-110 transition-all"
-                style={{ background: 'rgba(15,41,24,0.5)', border: '1px solid rgba(255,255,255,0.07)', overflow: 'hidden' }}
+                className="rounded-xl flex flex-col hover:brightness-105 transition-all"
+                style={{ background: 'var(--bg-card)', border: '1px solid var(--border-card)', overflow: 'hidden' }}
               >
                 {/* Header strip */}
-                <div className="px-4 py-3" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+                <div className="px-4 py-3" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
                   <div className="flex items-start justify-between">
                     <div>
                       <div className="flex items-center gap-2">
-                        <MapPin className="h-3.5 w-3.5 flex-shrink-0" style={{ color: '#35a98d' }} />
-                        <span className="font-semibold text-white text-sm">{loc.name}</span>
+                        <MapPin className="h-3.5 w-3.5 flex-shrink-0 text-sky-400" />
+                        <span className="font-semibold text-sm" style={{ color: 'var(--text-primary)' }}>{loc.name}</span>
                         {savedEntry && <Star className="h-3.5 w-3.5 flex-shrink-0" style={{ color: '#eab308', fill: '#eab308' }} />}
                       </div>
                       <p className="text-xs text-slate-500 ml-5.5 mt-0.5">{loc.district}, {loc.state}</p>
@@ -176,8 +176,8 @@ export function LocationsPage() {
                   </button>
                   <button
                     onClick={() => handleViewPrediction(loc.id)}
-                    className="flex-1 flex items-center justify-center gap-1.5 rounded-lg py-2 text-xs font-semibold text-white hover:brightness-110 transition-all"
-                    style={{ background: 'linear-gradient(135deg, #276942, #22866f)' }}
+                    className="flex-1 flex items-center justify-center gap-1.5 rounded-lg py-2 text-xs font-semibold text-white hover:brightness-110 transition-all shadow-sm"
+                    style={{ background: 'linear-gradient(135deg, #0284c7, #0369a1)' }}
                   >
                     <Brain className="h-3.5 w-3.5" /> Prediction
                   </button>

@@ -1,37 +1,51 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600;1,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600;1,700&display=swap');
 @import 'tailwindcss';
 
 @theme {
-  /* ── AARAKSH Core Palette ─────────────────────────────── */
-  --color-forest-950: #060f0a;
-  --color-forest-900: #0a1a10;
-  --color-forest-800: #0f2918;
-  --color-forest-700: #163d24;
-  --color-forest-600: #1e5231;
-  --color-forest-500: #276942;
-  --color-forest-400: #3a8f5b;
-  --color-forest-300: #5db07f;
-  --color-forest-200: #93cda9;
-  --color-forest-100: #c4e5d2;
-  --color-forest-50:  #eaf5ef;
+  /* ── AARAKSH Himalayan Twilight & Slate-Navy Palette ─────────────────── */
+  --color-mountain-950: #060b12;
+  --color-mountain-900: #0a111a;
+  --color-mountain-850: #0d1724;
+  --color-mountain-800: #121e2e;
+  --color-mountain-700: #1a2c42;
+  --color-mountain-600: #253e5c;
+  --color-mountain-500: #33547b;
+  --color-mountain-400: #4a75a7;
+  --color-mountain-300: #719ecf;
+  --color-mountain-200: #a7c5ea;
+  --color-mountain-100: #d6e5f7;
+  --color-mountain-50:  #f0f5fc;
 
-  --color-teal-950: #020d0c;
-  --color-teal-900: #061a17;
-  --color-teal-800: #0b2d29;
-  --color-teal-700: #0f4038;
-  --color-teal-600: #145549;
-  --color-teal-500: #1a6b5c;
-  --color-teal-400: #22866f;
-  --color-teal-300: #35a98d;
-  --color-teal-200: #62c9ae;
-  --color-teal-100: #a8e4d6;
-  --color-teal-50:  #e0f5f0;
+  /* Aliases for backwards compatibility with previous forest references */
+  --color-forest-950: #060b12;
+  --color-forest-900: #0a111a;
+  --color-forest-800: #0d1724;
+  --color-forest-700: #121e2e;
+  --color-forest-600: #1a2c42;
+  --color-forest-500: #0284c7;
+  --color-forest-400: #38bdf8;
+  --color-forest-300: #7dd3fc;
+  --color-forest-200: #bae6fd;
+  --color-forest-100: #e0f2fe;
+  --color-forest-50:  #f0f9ff;
 
-  --color-cyan-accent: #06b6d4;
-  --color-mint-accent: #34d399;
-  --color-sage-accent: #86efac;
+  --color-teal-950: #031219;
+  --color-teal-900: #061d27;
+  --color-teal-800: #0c2d3d;
+  --color-teal-700: #0f4055;
+  --color-teal-600: #0284c7;
+  --color-teal-500: #0ea5e9;
+  --color-teal-400: #38bdf8;
+  --color-teal-300: #7dd3fc;
+  --color-teal-200: #a5f3fc;
+  --color-teal-100: #cffafe;
+  --color-teal-50:  #f0fdfa;
 
-  /* Neutral slate for operational UI */
+  --color-cyan-accent: #38bdf8;
+  --color-mint-accent: #2dd4bf;
+  --color-sage-accent: #38bdf8;
+
+  /* Neutral slate */
   --color-slate-950: #020617;
   --color-slate-900: #0f172a;
   --color-slate-800: #1e293b;
@@ -59,29 +73,82 @@
   --color-risk-critical-bg:   #fee2e2;
 
   /* Typography */
-  --font-sans:   'Inter', system-ui, -apple-system, sans-serif;
-  --font-serif:  'Playfair Display', Georgia, 'Times New Roman', serif;
+  --font-sans:       'Inter', system-ui, -apple-system, sans-serif;
+  --font-serif:      'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+  --font-editorial:  'Cormorant Garamond', Georgia, serif;
+}
+
+/* ── CSS Theme Variables ─────────────────────────────────── */
+:root {
+  /* Light Theme (Alpine Mist) */
+  --bg-app: #f1f5f9;
+  --bg-surface: #ffffff;
+  --bg-surface-elevated: #ffffff;
+  --bg-card: rgba(255, 255, 255, 0.88);
+  --bg-card-solid: #ffffff;
+  --bg-card-subtle: #f8fafc;
+  --bg-header: rgba(255, 255, 255, 0.92);
+  --bg-sidebar: #ffffff;
+  --border-subtle: rgba(203, 213, 225, 0.6);
+  --border-card: rgba(203, 213, 225, 0.8);
+  --border-glow: rgba(2, 132, 199, 0.3);
+  --text-primary: #0f172a;
+  --text-secondary: #334155;
+  --text-muted: #64748b;
+  --text-faint: #94a3b8;
+  --accent-blue: #0284c7;
+  --accent-cyan: #0284c7;
+  --glass-bg: rgba(255, 255, 255, 0.82);
+  --glass-border: rgba(203, 213, 225, 0.6);
+  --map-filter: none;
+}
+
+:root.dark, [data-theme="dark"] {
+  /* Dark Theme (Himalayan Twilight / Slate-Navy Mountain) */
+  --bg-app: #080f18;
+  --bg-surface: #0c1624;
+  --bg-surface-elevated: #111e30;
+  --bg-card: rgba(13, 24, 38, 0.78);
+  --bg-card-solid: #0d1724;
+  --bg-card-subtle: rgba(21, 36, 56, 0.5);
+  --bg-header: rgba(10, 18, 30, 0.94);
+  --bg-sidebar: #09121d;
+  --border-subtle: rgba(56, 189, 248, 0.1);
+  --border-card: rgba(56, 189, 248, 0.14);
+  --border-glow: rgba(56, 189, 248, 0.35);
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --text-faint: #64748b;
+  --accent-blue: #0284c7;
+  --accent-cyan: #38bdf8;
+  --glass-bg: rgba(13, 24, 38, 0.75);
+  --glass-border: rgba(56, 189, 248, 0.14);
+  --map-filter: brightness(0.9) contrast(1.1);
 }
 
 /* ── Base Reset ──────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; }
 
-html { scroll-behavior: smooth; }
+html {
+  scroll-behavior: smooth;
+}
 
 body {
   font-family: var(--font-sans);
-  background-color: #f8fafc;
-  color: #0f172a;
+  background-color: var(--bg-app);
+  color: var(--text-primary);
   margin: 0; padding: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   line-height: 1.6;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* Operational app body (inside AppShell) */
 .app-body {
-  background-color: #0b1a14;
-  color: #e2e8f0;
+  background-color: var(--bg-app);
+  color: var(--text-primary);
 }
 
 /* ── Scrollbar ───────────────────────────────────────────── */
@@ -90,27 +157,54 @@ body {
 ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: #475569; }
 
-/* Dark scrollbar for app shell */
-.dark-scroll ::-webkit-scrollbar-thumb { background: #163d24; }
-.dark-scroll ::-webkit-scrollbar-thumb:hover { background: #1e5231; }
+.dark-scroll ::-webkit-scrollbar-thumb { background: #1a2c42; }
+.dark-scroll ::-webkit-scrollbar-thumb:hover { background: #253e5c; }
 
 /* ── Focus ───────────────────────────────────────────────── */
 *:focus-visible {
-  outline: 2px solid #35a98d;
+  outline: 2px solid #38bdf8;
   outline-offset: 2px;
 }
 
 /* ── MapLibre ────────────────────────────────────────────── */
 .maplibregl-canvas-container { width: 100%; height: 100%; }
-.maplibregl-ctrl-group { background: rgba(10, 26, 16, 0.92) !important; border: 1px solid rgba(255,255,255,0.1) !important; }
+.maplibregl-ctrl-group {
+  background: var(--bg-card-solid) !important;
+  border: 1px solid var(--border-card) !important;
+}
 .maplibregl-ctrl-group button { background: transparent !important; }
-.maplibregl-ctrl-group button:hover { background: rgba(255,255,255,0.08) !important; }
+.maplibregl-ctrl-group button:hover { background: rgba(56, 189, 248, 0.1) !important; }
 .maplibregl-ctrl button .maplibregl-ctrl-icon { filter: invert(0.8); }
-.maplibregl-ctrl-scale { background: rgba(10,26,16,0.8) !important; border-color: rgba(255,255,255,0.2) !important; color: rgba(255,255,255,0.6) !important; font-size: 10px !important; }
+.maplibregl-ctrl-scale {
+  background: var(--bg-card-solid) !important;
+  border-color: var(--border-subtle) !important;
+  color: var(--text-muted) !important;
+  font-size: 10px !important;
+}
 
 /* ── Typography Utilities ───────────────────────────────── */
-.font-serif { font-family: var(--font-serif); }
-.font-sans  { font-family: var(--font-sans); }
+.font-editorial {
+  font-family: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+}
+.font-serif {
+  font-family: var(--font-serif);
+}
+.font-sans {
+  font-family: var(--font-sans);
+}
+
+/* Editorial Heading Specifics */
+.editorial-headline {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  line-height: 0.95;
+}
+.editorial-italic {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+}
 
 /* ── Animations ─────────────────────────────────────────── */
 @keyframes fadeIn {
@@ -142,18 +236,21 @@ body {
   from { background-position: -200% 0; }
   to   { background-position: 200% 0; }
 }
-@keyframes gradientShift {
-  0%   { background-position: 0% 50%; }
-  50%  { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-@keyframes scanline {
-  0%   { transform: translateY(-100%); }
-  100% { transform: translateY(100vh); }
-}
-@keyframes breathe {
-  0%, 100% { opacity: 0.6; }
-  50%       { opacity: 1; }
+@keyframes rainDrop {
+  0% {
+    transform: translateY(-80px);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.75;
+  }
+  85% {
+    opacity: 0.4;
+  }
+  100% {
+    transform: translateY(105vh);
+    opacity: 0;
+  }
 }
 
 .animate-fade-in       { animation: fadeIn 0.25s ease-out; }
@@ -161,7 +258,6 @@ body {
 .animate-slide-right   { animation: slideRight 0.25s ease-out; }
 .animate-slide-up      { animation: slideUp 0.3s ease-out; }
 .animate-pulse-risk    { animation: pulseRisk 2s ease-in-out infinite; }
-.animate-breathe       { animation: breathe 3s ease-in-out infinite; }
 
 /* ── Map Marker Pulse ───────────────────────────────────── */
 .marker-pulse::after {
@@ -179,7 +275,7 @@ body {
 
 /* ── Skeleton Shimmer ───────────────────────────────────── */
 .skeleton {
-  background: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%);
+  background: linear-gradient(90deg, #121e2e 25%, #1a2c42 50%, #121e2e 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
   border-radius: 6px;
@@ -204,23 +300,16 @@ body {
 
 /* ── App Shell Glass Cards ──────────────────────────────── */
 .glass-card {
-  background: rgba(15, 41, 24, 0.6);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: var(--bg-card);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--border-card);
+  transition: background 0.3s ease, border-color 0.3s ease;
 }
 .glass-card-light {
-  background: rgba(255, 255, 255, 0.04);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-/* ── Causal Chain Arrow ─────────────────────────────────── */
-.causal-arrow {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: rgba(53, 169, 141, 0.5);
-  font-size: 20px;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(203, 213, 225, 0.7);
 }
 
 /* ── Environmental signal bars ──────────────────────────── */
@@ -230,47 +319,32 @@ body {
   transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* ── Page transition wrapper ────────────────────────────── */
-.page-enter {
-  animation: fadeIn 0.2s ease-out;
-}
-
-/* ── Landing page hero text gradient ────────────────────── */
-.text-gradient-green {
-  background: linear-gradient(135deg, #34d399 0%, #06b6d4 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-.text-gradient-warm {
-  background: linear-gradient(135deg, #f97316 0%, #ef4444 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-/* ── Intelligence panel ─────────────────────────────────── */
-.intel-panel {
-  background: rgba(6, 15, 10, 0.95);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(53, 169, 141, 0.2);
-  box-shadow: 0 20px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05);
-}
-
 /* ── Sidebar active glow ────────────────────────────────── */
 .nav-active-glow {
-  box-shadow: inset 3px 0 0 #35a98d;
+  box-shadow: inset 3px 0 0 #38bdf8;
 }
 
 /* ── Chart tooltip ──────────────────────────────────────── */
 .recharts-tooltip-wrapper .recharts-default-tooltip {
-  background: rgba(10, 26, 16, 0.95) !important;
-  border: 1px solid rgba(53, 169, 141, 0.3) !important;
+  background: var(--bg-card-solid) !important;
+  border: 1px solid var(--border-card) !important;
   border-radius: 8px !important;
-  color: #e2e8f0 !important;
+  color: var(--text-primary) !important;
   font-size: 12px !important;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.3) !important;
 }
-.recharts-tooltip-label { color: #94a3b8 !important; }
+.recharts-tooltip-label { color: var(--text-muted) !important; }
 
 /* ── Scrollbar inside dark panels ──────────────────────── */
-.dark-panel { scrollbar-color: #163d24 transparent; }
+.dark-panel { scrollbar-color: #1a2c42 transparent; }
+
+/* ── Ambient Rain / Signal Streaks ─────────────────────── */
+.rain-streak {
+  position: absolute;
+  width: 1px;
+  border-radius: 1px;
+  background: linear-gradient(180deg, transparent 0%, rgba(56, 189, 248, 0.7) 60%, rgba(255, 255, 255, 0.9) 100%);
+  filter: drop-shadow(0 0 3px rgba(56, 189, 248, 0.6));
+  animation: rainDrop 3.5s linear infinite;
+  pointer-events: none;
+}

@@ -8,6 +8,7 @@ import { cn } from '@/lib/utils';
 import { useAuth } from '@/contexts/AuthContext';
 import { ROUTES } from '@/lib/constants';
 import { useDemoMode } from '@/contexts/DemoContext';
+import { useTheme } from '@/contexts/ThemeContext';
 import { getRiskColor } from '@/lib/utils';
 
 interface SidebarProps {
@@ -70,6 +71,9 @@ function useNavItems() {
 }
 
 function NavItemComp({ item, isCollapsed }: { item: NavItem; isCollapsed: boolean }) {
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
+
   return (
     <NavLink
       to={item.to}
@@ -77,19 +81,26 @@ function NavItemComp({ item, isCollapsed }: { item: NavItem; isCollapsed: boolea
       className={({ isActive }) =>
         cn(
           'relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-150',
-          'text-slate-400 hover:text-white',
           isActive
-            ? 'bg-white/10 text-white nav-active-glow'
-            : 'hover:bg-white/6',
+            ? isDark
+              ? 'bg-sky-500/15 text-white nav-active-glow border-l-2 border-sky-400'
+              : 'bg-sky-50 text-sky-900 border-l-2 border-sky-600'
+            : isDark
+            ? 'text-slate-400 hover:text-white hover:bg-white/6'
+            : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100',
           isCollapsed && 'justify-center px-2'
         )
       }
     >
       {({ isActive }) => (
         <>
-          <span className={cn('flex-shrink-0', isActive ? 'text-emerald-400' : '')}>{item.icon}</span>
+          <span className={cn('flex-shrink-0', isActive ? (isDark ? 'text-sky-400' : 'text-sky-600') : '')}>
+            {item.icon}
+          </span>
           {!isCollapsed && <span>{item.label}</span>}
-          {isActive && !isCollapsed && <ChevronRight className="ml-auto h-3 w-3 text-emerald-400 opacity-60" />}
+          {isActive && !isCollapsed && (
+            <ChevronRight className={cn('ml-auto h-3 w-3 opacity-60', isDark ? 'text-sky-400' : 'text-sky-600')} />
+          )}
         </>
       )}
     </NavLink>
@@ -99,7 +110,9 @@ function NavItemComp({ item, isCollapsed }: { item: NavItem; isCollapsed: boolea
 export function Sidebar({ isOpen, isMobileOpen, onMobileClose }: SidebarProps) {
   const navigate = useNavigate();
   const { logout, user } = useAuth();
-  const { currentScenario, scenarioRiskData } = useDemoMode();
+  const { currentScenario } = useDemoMode();
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
   const navItems = useNavItems();
   const isCollapsed = !isOpen;
 
@@ -118,8 +131,8 @@ export function Sidebar({ isOpen, isMobileOpen, onMobileClose }: SidebarProps) {
         isCollapsed ? 'w-16' : 'w-56'
       )}
       style={{
-        background: 'linear-gradient(180deg, #060f0a 0%, #0a1a10 100%)',
-        borderRight: '1px solid rgba(255,255,255,0.06)',
+        background: 'var(--bg-sidebar)',
+        borderRight: '1px solid var(--border-subtle)',
       }}
     >
       {/* Brand */}
@@ -128,23 +141,32 @@ export function Sidebar({ isOpen, isMobileOpen, onMobileClose }: SidebarProps) {
           'flex items-center gap-3 py-4 px-4 flex-shrink-0',
           isCollapsed && 'justify-center px-2'
         )}
-        style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}
+        style={{ borderBottom: '1px solid var(--border-subtle)' }}
       >
+        {/* Square 'A' Logo matching landing page and reference image */}
         <div
-          className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg"
-          style={{ background: 'linear-gradient(135deg, #276942, #1a6b5c)' }}
+          className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-md font-bold text-white shadow-sm"
+          style={{
+            background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)',
+            boxShadow: '0 2px 8px rgba(2, 132, 199, 0.3)',
+          }}
         >
-          <Shield className="h-4 w-4 text-white" />
+          <span className="text-sm tracking-wider font-extrabold">A</span>
         </div>
         {!isCollapsed && (
           <div className="min-w-0">
-            <div className="text-sm font-bold tracking-widest text-white" style={{ letterSpacing: '0.15em' }}>AARAKSH</div>
-            <div className="text-[10px] text-slate-500">Flash Flood Intelligence</div>
+            <div
+              className="text-sm font-bold tracking-widest uppercase"
+              style={{ letterSpacing: '0.15em', color: 'var(--text-primary)' }}
+            >
+              AARAKSH
+            </div>
+            <div className="text-[10px] text-slate-400">Flash Flood Intelligence</div>
           </div>
         )}
         <button
           onClick={onMobileClose}
-          className="ml-auto text-slate-500 hover:text-white lg:hidden"
+          className="ml-auto text-slate-400 hover:text-slate-200 lg:hidden"
         >
           <X className="h-4 w-4" />
         </button>
@@ -152,14 +174,22 @@ export function Sidebar({ isOpen, isMobileOpen, onMobileClose }: SidebarProps) {
 
       {/* Scenario status chip */}
       {!isCollapsed && (
-        <div className="mx-3 mt-3 mb-1 rounded-lg px-3 py-2" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)' }}>
+        <div
+          className="mx-3 mt-3 mb-1 rounded-lg px-3 py-2"
+          style={{
+            background: isDark ? 'rgba(255,255,255,0.04)' : '#f8fafc',
+            border: '1px solid var(--border-subtle)',
+          }}
+        >
           <div className="flex items-center justify-between">
-            <span className="text-[10px] text-slate-500 uppercase tracking-wider">Scenario</span>
+            <span className="text-[10px] text-slate-400 uppercase tracking-wider">Scenario</span>
             <span className="text-[10px] font-semibold" style={{ color: riskColor }}>{currentScenario.riskLevel}</span>
           </div>
           <div className="flex items-center gap-1.5 mt-1">
             <span className="h-1.5 w-1.5 rounded-full animate-pulse" style={{ backgroundColor: riskColor }} />
-            <span className="text-xs text-slate-300 truncate">{currentScenario.label}</span>
+            <span className="text-xs truncate font-medium" style={{ color: 'var(--text-secondary)' }}>
+              {currentScenario.label}
+            </span>
           </div>
         </div>
       )}
@@ -167,8 +197,14 @@ export function Sidebar({ isOpen, isMobileOpen, onMobileClose }: SidebarProps) {
       {/* Role badge */}
       {!isCollapsed && user && (
         <div className="mx-3 mt-2 mb-1">
-          <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider"
-            style={{ background: 'rgba(53,169,141,0.15)', color: '#35a98d', border: '1px solid rgba(53,169,141,0.25)' }}>
+          <span
+            className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider"
+            style={{
+              background: 'rgba(56,189,248,0.15)',
+              color: isDark ? '#38bdf8' : '#0284c7',
+              border: '1px solid rgba(56,189,248,0.25)',
+            }}
+          >
             {roleLabel}
           </span>
         </div>
@@ -184,10 +220,10 @@ export function Sidebar({ isOpen, isMobileOpen, onMobileClose }: SidebarProps) {
           <>
             {!isCollapsed && (
               <div className="pt-4 pb-1 px-3">
-                <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-600">Management</span>
+                <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">Management</span>
               </div>
             )}
-            {isCollapsed && <div className="my-2 mx-1" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }} />}
+            {isCollapsed && <div className="my-2 mx-1" style={{ borderTop: '1px solid var(--border-subtle)' }} />}
             {navItems.management.map(item => (
               <NavItemComp key={item.to} item={item} isCollapsed={isCollapsed} />
             ))}
@@ -196,14 +232,14 @@ export function Sidebar({ isOpen, isMobileOpen, onMobileClose }: SidebarProps) {
       </nav>
 
       {/* Bottom */}
-      <div className="px-2 py-3 space-y-0.5 flex-shrink-0" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+      <div className="px-2 py-3 space-y-0.5 flex-shrink-0" style={{ borderTop: '1px solid var(--border-subtle)' }}>
         {navItems.system.map(item => (
           <NavItemComp key={item.to} item={item} isCollapsed={isCollapsed} />
         ))}
         <button
           onClick={handleLogout}
           className={cn(
-            'flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-500 hover:bg-white/6 hover:text-red-400 transition-all',
+            'flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-400 hover:text-red-400 transition-all hover:bg-red-500/10',
             isCollapsed && 'justify-center px-2'
           )}
           title={isCollapsed ? 'Logout' : undefined}

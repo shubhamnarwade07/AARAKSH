@@ -24,8 +24,8 @@ function TrendIcon({ trend }: { trend: string }) {
 }
 
 const CARD = {
-  background: 'rgba(15,41,24,0.5)',
-  border: '1px solid rgba(255,255,255,0.07)',
+  background: 'var(--bg-card)',
+  border: '1px solid var(--border-card)',
   borderRadius: '12px',
   overflow: 'hidden' as const,
 };
@@ -34,7 +34,7 @@ const CARD_HEADER = {
   alignItems: 'center' as const,
   justifyContent: 'space-between' as const,
   padding: '12px 16px',
-  borderBottom: '1px solid rgba(255,255,255,0.06)',
+  borderBottom: '1px solid var(--border-subtle)',
 };
 
 // ── SVG Gauge ────────────────────────────────────────────
@@ -190,19 +190,24 @@ export function PredictionsPage() {
 
       {/* Location selector bar */}
       <div
-        className="flex flex-wrap items-center gap-3 rounded-xl px-4 py-3"
-        style={{ background: 'rgba(15,41,24,0.4)', border: '1px solid rgba(255,255,255,0.06)' }}
+        className="flex flex-wrap items-center gap-3 rounded-xl px-4 py-3 transition-colors duration-200"
+        style={{ background: 'var(--bg-card-subtle)', border: '1px solid var(--border-subtle)' }}
       >
-        <MapPin className="h-4 w-4 text-emerald-400 flex-shrink-0" />
+        <MapPin className="h-4 w-4 text-sky-400 flex-shrink-0" />
         <span className="text-xs text-slate-500 font-medium">Location:</span>
         <select
           value={localSelectedId}
           onChange={e => handleLocationChange(e.target.value)}
-          className="flex-1 rounded-lg px-3 py-1.5 text-sm text-white focus:outline-none"
-          style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', minWidth: '200px' }}
+          className="flex-1 rounded-lg px-3 py-1.5 text-sm focus:outline-none transition-colors"
+          style={{
+            background: 'var(--bg-card)',
+            color: 'var(--text-primary)',
+            border: '1px solid var(--border-card)',
+            minWidth: '200px'
+          }}
         >
           {MOCK_LOCATIONS.map(l => (
-            <option key={l.id} value={l.id} style={{ background: '#060f0a' }}>
+            <option key={l.id} value={l.id} style={{ background: 'var(--bg-card-solid)', color: 'var(--text-primary)' }}>
               {l.name} — {l.district}, {l.state}
             </option>
           ))}
@@ -213,8 +218,7 @@ export function PredictionsPage() {
         </div>
         <Link
           to={ROUTES.APP_RISK_MAP}
-          className="flex items-center gap-1.5 text-xs font-medium transition-colors ml-auto"
-          style={{ color: '#35a98d' }}
+          className="flex items-center gap-1.5 text-xs font-medium transition-colors ml-auto text-sky-400 hover:text-sky-300"
         >
           <ArrowLeft className="h-3.5 w-3.5" /> Map
         </Link>
@@ -393,8 +397,8 @@ export function PredictionsPage() {
                     </button>
                     <button
                       onClick={() => navigate(ROUTES.APP_SAFETY_CENTRE)}
-                      className="flex items-center justify-center gap-2 w-full rounded-lg px-4 py-2 text-sm font-semibold text-white transition-all hover:brightness-110"
-                      style={{ background: 'linear-gradient(135deg, #276942, #22866f)' }}
+                      className="flex items-center justify-center gap-2 w-full rounded-lg px-4 py-2 text-sm font-semibold text-white transition-all hover:brightness-110 shadow-sm"
+                      style={{ background: 'linear-gradient(135deg, #0284c7, #0369a1)' }}
                     >
                       <Shield className="h-4 w-4" /> Safety Guidance
                     </button>
