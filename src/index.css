@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600;1,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Inter:wght@300;400;500;600;700;800&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300;1,400&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600;1,700&display=swap');
 @import 'tailwindcss';
 
 @theme {
@@ -76,6 +76,8 @@
   --font-sans:       'Inter', system-ui, -apple-system, sans-serif;
   --font-serif:      'Cormorant Garamond', 'Playfair Display', Georgia, serif;
   --font-editorial:  'Cormorant Garamond', Georgia, serif;
+  --font-govt:       'Cinzel', serif;
+  --font-official:   'Merriweather', Georgia, serif;
 }
 
 /* ── CSS Theme Variables ─────────────────────────────────── */
@@ -191,6 +193,14 @@ body {
 }
 .font-sans {
   font-family: var(--font-sans);
+}
+
+.font-govt {
+  font-family: 'Cinzel', serif;
+  letter-spacing: 0.08em;
+}
+.font-official {
+  font-family: 'Merriweather', Georgia, serif;
 }
 
 /* Editorial Heading Specifics */
@@ -348,3 +358,13 @@ body {
   animation: rainDrop 3.5s linear infinite;
   pointer-events: none;
 }
+
+/* ── Government & Official Typography Classes ───────────── */
+.font-govt {
+  font-family: 'Cinzel', serif !important;
+}
+
+.font-official {
+  font-family: 'Merriweather', Georgia, serif !important;
+}
+

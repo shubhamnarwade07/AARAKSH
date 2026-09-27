@@ -74,7 +74,7 @@ export function LoginPage() {
             <AarakshLogo size="xl" />
           </div>
           <h1
-            className="text-2xl font-bold uppercase tracking-[0.2em]"
+            className="font-govt text-2xl font-bold uppercase tracking-[0.22em]"
             style={{ color: isDark ? '#f8fafc' : '#0f172a' }}
           >
             AARAKSH

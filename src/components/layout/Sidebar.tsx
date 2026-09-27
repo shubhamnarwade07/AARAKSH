@@ -149,8 +149,8 @@ export function Sidebar({ isOpen, isMobileOpen, onMobileClose }: SidebarProps) {
         {!isCollapsed && (
           <div className="min-w-0">
             <div
-              className="text-sm font-bold tracking-widest uppercase"
-              style={{ letterSpacing: '0.15em', color: 'var(--text-primary)' }}
+              className="font-govt text-sm font-bold tracking-[0.2em] uppercase"
+              style={{ color: 'var(--text-primary)' }}
             >
               AARAKSH
             </div>

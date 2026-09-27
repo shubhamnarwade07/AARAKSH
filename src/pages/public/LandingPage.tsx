@@ -86,7 +86,7 @@ export function LandingPage() {
           <Link to={ROUTES.LANDING} className="flex items-center gap-3 group">
             <AarakshLogo size="md" />
             <span
-              className="font-bold tracking-[0.2em] text-sm uppercase transition-colors"
+              className="font-govt font-bold tracking-[0.22em] text-sm uppercase transition-colors"
               style={{ color: isDark ? '#ffffff' : '#0f172a' }}
             >
               AARAKSH
@@ -153,25 +153,25 @@ export function LandingPage() {
 
       {/* ── HERO SECTION ────────────────────────────────────────────────── */}
       <section className="relative min-h-screen flex flex-col justify-between pt-28 pb-8 px-6 lg:px-12 overflow-hidden">
-        {/* Consistent Single Mountain Photo with Atmospheric Overlays */}
+        {/* Consistent Single Mountain Photo with Atmospheric Overlays - Razor Sharp in Both Modes */}
         <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
           <img
             src="/mountains-dark.jpg"
-            alt="Himalayan Mountain Range"
-            className="w-full h-full object-cover object-center transform scale-105"
+            alt="Himalayan Mountain Range Sentinel"
+            className="w-full h-full object-cover object-center"
             style={{
-              filter: isDark ? 'brightness(0.72) contrast(1.18)' : 'brightness(0.85) contrast(1.08)',
+              filter: isDark ? 'brightness(0.74) contrast(1.18) saturate(1.05)' : 'brightness(0.82) contrast(1.22) saturate(1.05)',
               transition: 'filter 0.5s ease',
             }}
           />
 
-          {/* Unified Atmospheric Gradient Overlay */}
+          {/* Unified Atmospheric Gradient Overlay - No milky-white wash in light mode */}
           <div
-            className="absolute inset-0 transition-colors duration-500"
+            className="absolute inset-0 transition-all duration-500"
             style={{
               background: isDark
-                ? 'radial-gradient(ellipse at 50% 35%, rgba(7, 13, 21, 0.3) 0%, rgba(7, 13, 21, 0.85) 75%, rgba(7, 13, 21, 0.98) 100%)'
-                : 'radial-gradient(ellipse at 50% 35%, rgba(244, 247, 251, 0.3) 0%, rgba(244, 247, 251, 0.75) 75%, rgba(244, 247, 251, 0.96) 100%)',
+                ? 'radial-gradient(ellipse at 50% 35%, rgba(7, 13, 21, 0.25) 0%, rgba(7, 13, 21, 0.72) 65%, rgba(7, 13, 21, 0.98) 100%)'
+                : 'linear-gradient(180deg, rgba(15, 23, 42, 0.55) 0%, rgba(15, 23, 42, 0.35) 45%, rgba(15, 23, 42, 0.65) 80%, rgba(244, 247, 251, 0.92) 98%, #f4f7fb 100%)',
             }}
           />
 
@@ -184,11 +184,11 @@ export function LandingPage() {
           <div
             className="rounded-xl p-4 w-64 backdrop-blur-xl transition-all duration-300 shadow-2xl animate-fade-in"
             style={{
-              background: isDark ? 'rgba(10, 20, 32, 0.82)' : 'rgba(255, 255, 255, 0.92)',
+              background: isDark ? 'rgba(10, 20, 32, 0.85)' : 'rgba(255, 255, 255, 0.94)',
               border: isDark ? '1px solid rgba(56, 189, 248, 0.25)' : '1px solid rgba(2, 132, 199, 0.3)',
               boxShadow: isDark
                 ? '0 16px 36px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
-                : '0 12px 30px rgba(0, 0, 0, 0.08)',
+                : '0 12px 30px rgba(0, 0, 0, 0.12)',
             }}
           >
             {/* Header row: Green pulse dot + LIVE SIGNAL + DEMO */}
@@ -198,7 +198,7 @@ export function LandingPage() {
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
                 </span>
-                <span className="text-[11px] font-bold tracking-[0.14em] uppercase text-sky-400">
+                <span className="text-[11px] font-bold tracking-[0.14em] uppercase text-sky-400 font-mono">
                   LIVE SIGNAL
                 </span>
               </div>
@@ -251,20 +251,20 @@ export function LandingPage() {
                 onClick={() => setActiveSlide(0)}
                 className="text-[11px] font-mono tracking-widest px-2.5 py-1 rounded transition-colors"
                 style={{
-                  background: activeSlide === 0 ? 'rgba(56, 189, 248, 0.18)' : 'transparent',
-                  color: activeSlide === 0 ? '#38bdf8' : (isDark ? '#64748b' : '#94a3b8'),
+                  background: activeSlide === 0 ? 'rgba(56, 189, 248, 0.22)' : 'transparent',
+                  color: activeSlide === 0 ? '#38bdf8' : 'rgba(255, 255, 255, 0.7)',
                 }}
               >
                 01 · MOUNTAINS
               </button>
-              <span className="text-slate-500 text-xs">/</span>
+              <span className="text-slate-400 text-xs">/</span>
               <button
                 type="button"
                 onClick={() => setActiveSlide(1)}
                 className="text-[11px] font-mono tracking-widest px-2.5 py-1 rounded transition-colors"
                 style={{
-                  background: activeSlide === 1 ? 'rgba(56, 189, 248, 0.18)' : 'transparent',
-                  color: activeSlide === 1 ? '#38bdf8' : (isDark ? '#64748b' : '#94a3b8'),
+                  background: activeSlide === 1 ? 'rgba(56, 189, 248, 0.22)' : 'transparent',
+                  color: activeSlide === 1 ? '#38bdf8' : 'rgba(255, 255, 255, 0.7)',
                 }}
               >
                 02 · LAND SIGNALS
@@ -275,38 +275,30 @@ export function LandingPage() {
             {activeSlide === 0 && (
               <div className="animate-fade-in">
                 {/* Eyebrow */}
-                <p className="text-xs sm:text-sm font-semibold tracking-[0.24em] uppercase mb-6 text-sky-400">
-                  FLASH FLOOD INTELLIGENCE — HIMALAYAS
+                <p className="text-xs sm:text-sm font-semibold tracking-[0.22em] uppercase mb-4 text-sky-400 font-mono flex items-center gap-2">
+                  <span className="h-1.5 w-1.5 rounded-full bg-sky-400 animate-ping inline-block" />
+                  FLASH FLOOD EARLY WARNING & HYDROMETRIC RADAR · HIMALAYAS
                 </p>
 
-                {/* Massive Editorial Headline */}
+                {/* Massive Sovereign Government Headline */}
                 <h1
-                  className="font-editorial text-5xl sm:text-7xl md:text-8xl lg:text-[6.5rem] tracking-tight mb-6 uppercase"
+                  className="font-govt text-4xl sm:text-6xl md:text-7xl lg:text-[5.5rem] font-bold tracking-wider mb-6 uppercase text-white"
                   style={{
-                    lineHeight: 0.95,
-                    fontFamily: 'Cormorant Garamond, Georgia, serif',
-                    color: isDark ? '#ffffff' : '#0f172a',
-                    textShadow: isDark ? '0 4px 24px rgba(0, 0, 0, 0.6)' : 'none',
+                    lineHeight: 1.05,
+                    textShadow: '0 4px 30px rgba(0, 0, 0, 0.75)',
                   }}
                 >
                   THE MOUNTAINS
                   <br />
-                  <span
-                    className="editorial-italic font-normal lowercase tracking-normal"
-                    style={{
-                      fontStyle: 'italic',
-                      fontFamily: 'Cormorant Garamond, Georgia, serif',
-                      textTransform: 'none',
-                    }}
-                  >
-                    speak first.
+                  <span className="text-sky-400 font-semibold tracking-wide">
+                    SPEAK FIRST.
                   </span>
                 </h1>
 
-                {/* Subtitle */}
+                {/* Official Subtitle */}
                 <p
-                  className="text-base sm:text-lg md:text-xl font-normal max-w-xl mb-9 leading-relaxed"
-                  style={{ color: isDark ? 'rgba(226, 232, 240, 0.85)' : 'rgba(51, 65, 85, 0.9)' }}
+                  className="font-official text-base sm:text-lg md:text-xl font-normal max-w-xl mb-9 leading-relaxed text-slate-100"
+                  style={{ textShadow: '0 2px 14px rgba(0, 0, 0, 0.6)' }}
                 >
                   We listen to the signals before the danger arrives.
                 </p>
@@ -326,10 +318,11 @@ export function LandingPage() {
 
                   <a
                     href="#how-it-works"
-                    className="inline-flex items-center gap-2 rounded-lg px-5 py-3.5 text-xs sm:text-sm font-semibold tracking-wider transition-all duration-200 hover:bg-white/10"
+                    className="inline-flex items-center gap-2 rounded-lg px-5 py-3.5 text-xs sm:text-sm font-semibold tracking-wider text-white transition-all duration-200 hover:bg-white/15"
                     style={{
-                      color: isDark ? '#f8fafc' : '#334155',
-                      border: isDark ? '1px solid rgba(255, 255, 255, 0.18)' : '1px solid rgba(203, 213, 225, 0.85)',
+                      border: '1px solid rgba(255, 255, 255, 0.35)',
+                      background: 'rgba(255, 255, 255, 0.1)',
+                      backdropFilter: 'blur(8px)',
                     }}
                   >
                     HOW IT WORKS
@@ -342,37 +335,33 @@ export function LandingPage() {
             {activeSlide === 1 && (
               <div className="animate-fade-in">
                 {/* Eyebrow */}
-                <p className="text-xs sm:text-sm font-semibold tracking-[0.24em] uppercase mb-6 text-sky-400">
-                  ENVIRONMENTAL AWARENESS
+                <p className="text-xs sm:text-sm font-semibold tracking-[0.22em] uppercase mb-4 text-sky-400 font-mono flex items-center gap-2">
+                  <span className="h-1.5 w-1.5 rounded-full bg-sky-400 animate-ping inline-block" />
+                  ENVIRONMENTAL SURVEILLANCE · UTTARAKHAND CATCHMENTS
                 </p>
 
-                {/* Massive Editorial Headline */}
+                {/* Massive Sovereign Government Headline */}
                 <h1
-                  className="font-editorial text-5xl sm:text-7xl md:text-8xl lg:text-[6.2rem] tracking-tight mb-6 uppercase"
+                  className="font-govt text-4xl sm:text-6xl md:text-7xl lg:text-[5.2rem] font-bold tracking-wider mb-6 uppercase text-white"
                   style={{
-                    lineHeight: 0.95,
-                    fontFamily: 'Cormorant Garamond, Georgia, serif',
-                    color: isDark ? '#ffffff' : '#0f172a',
-                    textShadow: isDark ? '0 4px 24px rgba(0, 0, 0, 0.6)' : 'none',
+                    lineHeight: 1.05,
+                    textShadow: '0 4px 30px rgba(0, 0, 0, 0.75)',
                   }}
                 >
-                  THE LAND IS
+                  THE LAND IS ALWAYS
                   <br />
-                  ALWAYS
-                  <br />
-                  <span
-                    className="editorial-italic font-normal lowercase tracking-normal"
-                    style={{
-                      fontStyle: 'italic',
-                      fontFamily: 'Cormorant Garamond, Georgia, serif',
-                      textTransform: 'none',
-                    }}
-                  >
-                    telling us
+                  <span className="text-sky-400 font-semibold tracking-wide">
+                    TELLING US SOMETHING.
                   </span>
-                  <br />
-                  SOMETHING.
                 </h1>
+
+                {/* Official Subtitle */}
+                <p
+                  className="font-official text-base sm:text-lg md:text-xl font-normal max-w-xl mb-9 leading-relaxed text-slate-100"
+                  style={{ textShadow: '0 2px 14px rgba(0, 0, 0, 0.6)' }}
+                >
+                  Hyper-local predictive intelligence powered by multi-sensor radar feeds.
+                </p>
 
                 {/* Explore Button */}
                 <div className="flex items-center gap-4 mt-8">
@@ -389,10 +378,11 @@ export function LandingPage() {
 
                   <a
                     href="#intelligence"
-                    className="inline-flex items-center gap-2 rounded-lg px-5 py-3.5 text-xs sm:text-sm font-semibold tracking-wider transition-all duration-200 hover:bg-white/10"
+                    className="inline-flex items-center gap-2 rounded-lg px-5 py-3.5 text-xs sm:text-sm font-semibold tracking-wider text-white transition-all duration-200 hover:bg-white/15"
                     style={{
-                      color: isDark ? '#f8fafc' : '#334155',
-                      border: isDark ? '1px solid rgba(255, 255, 255, 0.18)' : '1px solid rgba(203, 213, 225, 0.85)',
+                      border: '1px solid rgba(255, 255, 255, 0.35)',
+                      background: 'rgba(255, 255, 255, 0.1)',
+                      backdropFilter: 'blur(8px)',
                     }}
                   >
                     VIEW SENSORS
@@ -415,22 +405,22 @@ export function LandingPage() {
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-left">
             <div>
-              <p className="text-xs text-slate-400 mb-1">Soil saturation signals</p>
-              <p className="text-sm sm:text-base font-semibold text-sky-400 tracking-wide">
+              <p className="text-xs text-slate-300 mb-1">Soil saturation signals</p>
+              <p className="text-sm sm:text-base font-semibold text-sky-400 tracking-wide font-mono">
                 Active monitoring
               </p>
             </div>
 
             <div>
-              <p className="text-xs text-slate-400 mb-1">River gauge stations</p>
-              <p className="text-sm sm:text-base font-semibold text-sky-400 tracking-wide">
+              <p className="text-xs text-slate-300 mb-1">River gauge stations</p>
+              <p className="text-sm sm:text-base font-semibold text-sky-400 tracking-wide font-mono">
                 12 locations
               </p>
             </div>
 
             <div>
-              <p className="text-xs text-slate-400 mb-1">Rain gauges networked</p>
-              <p className="text-sm sm:text-base font-semibold text-sky-400 tracking-wide">
+              <p className="text-xs text-slate-300 mb-1">Rain gauges networked</p>
+              <p className="text-sm sm:text-base font-semibold text-sky-400 tracking-wide font-mono">
                 Rudraprayag district
               </p>
             </div>
@@ -440,15 +430,13 @@ export function LandingPage() {
             <a
               href="#about"
               className="group flex flex-col items-center gap-1.5 text-[11px] font-semibold tracking-[0.2em] uppercase transition-colors"
-              style={{ color: isDark ? 'rgba(255, 255, 255, 0.5)' : 'rgba(51, 65, 85, 0.65)' }}
+              style={{ color: 'rgba(255, 255, 255, 0.75)' }}
             >
               <span>SCROLL TO EXPLORE</span>
-              <ChevronDown className="h-4 w-4 animate-bounce group-hover:translate-y-0.5 transition-transform" />
+              <ChevronDown className="h-4 w-4 animate-bounce group-hover:translate-y-0.5 transition-transform text-sky-400" />
             </a>
           </div>
         </div>
-      </section>
-
       {/* ── SECTION: THE CHALLENGE / ABOUT (Enhanced) ───────────────────── */}
       <section
         id="about"
@@ -471,7 +459,7 @@ export function LandingPage() {
           <div className="grid lg:grid-cols-12 gap-16 items-center">
             <div className="lg:col-span-6">
               <div
-                className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs mb-5"
+                className="inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-xs mb-5 font-medium"
                 style={{
                   background: 'rgba(56, 189, 248, 0.12)',
                   border: '1px solid rgba(56, 189, 248, 0.28)',
@@ -479,24 +467,23 @@ export function LandingPage() {
                 }}
               >
                 <Radio className="h-3.5 w-3.5 animate-pulse text-sky-400" />
-                SIH 2026 · Problem SIH26192 · NDRF / MHA
+                <span className="font-mono">Smart India Hackathon 2026 · SIH26192 · NDRF / Ministry of Home Affairs (MHA)</span>
               </div>
 
               <h2
-                className="font-editorial text-4xl sm:text-6xl font-normal leading-[1.05] mb-6"
+                className="font-govt text-3xl sm:text-5xl font-bold leading-[1.15] mb-6 uppercase tracking-wide"
                 style={{
-                  fontFamily: 'Cormorant Garamond, Georgia, serif',
                   color: isDark ? '#f8fafc' : '#0f172a',
                 }}
               >
                 When Minutes
                 <br />
-                <span className="italic" style={{ color: '#38bdf8' }}>Define Lives.</span>
+                <span style={{ color: isDark ? '#38bdf8' : '#0284c7' }}>Define Lives.</span>
               </h2>
 
               <p
-                className="text-base sm:text-lg leading-relaxed mb-6"
-                style={{ color: isDark ? '#94a3b8' : '#475569' }}
+                className="font-official text-base sm:text-lg leading-relaxed mb-6"
+                style={{ color: isDark ? '#cbd5e1' : '#334155' }}
               >
                 In the high-altitude river corridors of the Himalayas, cloudbursts unleash sudden surges within 30 to 45 minutes.
                 Conventional regional meteorological advisories operate at district grid scales—blind to isolated micro-catchments.
@@ -504,7 +491,7 @@ export function LandingPage() {
 
               <p
                 className="text-sm leading-relaxed mb-8"
-                style={{ color: isDark ? '#64748b' : '#64748b' }}
+                style={{ color: isDark ? '#94a3b8' : '#64748b' }}
               >
                 AARAKSH delivers hyper-local predictive surveillance by coupling satellite precipitation radar, IoT hydrometric river telemetry, high-resolution Digital Elevation Models (DEM), and predictive machine-learning runoff models.
               </p>
@@ -541,7 +528,7 @@ export function LandingPage() {
                   icon: <Bell className="h-5 w-5 text-sky-400" />,
                   title: 'Last-Mile Warning Bottlenecks',
                   tag: 'COMMUNICATION',
-                  desc: 'Remote pilgrim tracks and vulnerable riverside hamlets require automated fail-safe alert escalation across SMS, IVR, sirens, and field stations.',
+                  desc: 'Remote pilgrim tracks and vulnerable riverside hamlets require automated fail-safe alert escalation across SMS, Interactive Voice Response (IVR), sirens, and field stations.',
                 },
               ].map((item, i) => (
                 <div
@@ -600,19 +587,18 @@ export function LandingPage() {
       >
         <div className="mx-auto max-w-7xl">
           <div className="text-center max-w-3xl mx-auto mb-18">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] mb-3 text-sky-400">
-              END-TO-END PIPELINE
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] mb-3 text-sky-400 font-mono">
+              END-TO-END OPERATIONAL ARCHITECTURE
             </p>
             <h2
-              className="font-editorial text-4xl sm:text-6xl font-normal leading-tight mb-4"
+              className="font-govt text-3xl sm:text-5xl font-bold leading-tight mb-4 uppercase tracking-wide"
               style={{
-                fontFamily: 'Cormorant Garamond, Georgia, serif',
                 color: isDark ? '#f8fafc' : '#0f172a',
               }}
             >
-              Intelligence Across <span className="italic" style={{ color: '#38bdf8' }}>Every Layer</span>
+              Intelligence Across <span style={{ color: isDark ? '#38bdf8' : '#0284c7' }}>Every Layer</span>
             </h2>
-            <p className="text-sm sm:text-base leading-relaxed" style={{ color: isDark ? '#94a3b8' : '#64748b' }}>
+            <p className="font-official text-sm sm:text-base leading-relaxed" style={{ color: isDark ? '#cbd5e1' : '#475569' }}>
               Four synchronized operational layers continuously gather, simulate, synthesize, and dispatch real-time hazard intelligence to save lives.
             </p>
           </div>
@@ -728,11 +714,11 @@ export function LandingPage() {
               </div>
               <div className="flex flex-wrap items-center justify-center gap-2">
                 {[
-                  'IMD Doppler Radar',
-                  'NASA GPM Satellite',
-                  'CWC River Gauges',
-                  'Survey of India DEM',
-                  'NDRF Early Warning Node',
+                  'IMD Doppler Weather Radar',
+                  'NASA GPM Satellite Feeds',
+                  'Central Water Commission (CWC) River Gauges',
+                  'Survey of India Digital Elevation Models (DEM)',
+                  'National Disaster Response Force (NDRF) Early Warning Node',
                 ].map((src) => (
                   <span
                     key={src}
@@ -765,13 +751,12 @@ export function LandingPage() {
           <div className="grid lg:grid-cols-12 gap-10 items-center">
             {/* Left Column: Context & Controls */}
             <div className="lg:col-span-5">
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] mb-3 text-sky-400">
-                LIVE GIS SURVEILLANCE
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] mb-3 text-sky-400 font-mono">
+                LIVE GIS HYDROMETRIC SURVEILLANCE
               </p>
               <h2
-                className="font-editorial text-4xl sm:text-6xl font-normal leading-tight mb-4"
+                className="font-govt text-3xl sm:text-5xl font-bold leading-tight mb-4 uppercase tracking-wide"
                 style={{
-                  fontFamily: 'Cormorant Garamond, Georgia, serif',
                   color: isDark ? '#f8fafc' : '#0f172a',
                 }}
               >
@@ -779,11 +764,11 @@ export function LandingPage() {
                 <br />
                 Understand Impact.
                 <br />
-                <span className="italic" style={{ color: '#38bdf8' }}>Take Action.</span>
+                <span style={{ color: isDark ? '#38bdf8' : '#0284c7' }}>Take Action.</span>
               </h2>
               <p
-                className="text-sm leading-relaxed mb-6"
-                style={{ color: isDark ? '#94a3b8' : '#64748b' }}
+                className="font-official text-sm sm:text-base leading-relaxed mb-6"
+                style={{ color: isDark ? '#cbd5e1' : '#475569' }}
               >
                 Interact with real-time risk predictions across the vulnerable Mandakini and Alaknanda river corridors. Select any monitoring station to inspect live soil moisture and rainfall.
               </p>
@@ -862,13 +847,14 @@ export function LandingPage() {
                           {loc.name}
                         </span>
                         <span
-                          className="text-[10px] font-bold px-1.5 py-0.5 rounded"
+                          className="text-[10px] font-bold px-2 py-0.5 rounded font-mono"
                           style={{
                             background: `${RISK_COLOR[loc.risk]}18`,
                             color: RISK_COLOR[loc.risk],
+                            border: `1px solid ${RISK_COLOR[loc.risk]}35`,
                           }}
                         >
-                          {loc.risk[0]}
+                          {loc.risk}
                         </span>
                       </button>
                     );
@@ -992,7 +978,7 @@ export function LandingPage() {
                 <div className="p-6">
                   <div className="flex items-center justify-between pb-4 mb-4 border-b border-slate-500/15">
                     <div>
-                      <h4 className="text-xl font-bold font-editorial" style={{ color: isDark ? '#f8fafc' : '#0f172a' }}>
+                      <h4 className="text-xl font-bold font-govt" style={{ color: isDark ? '#f8fafc' : '#0f172a' }}>
                         {activeLocation.name}
                       </h4>
                       <p className="text-xs text-slate-400">
@@ -1009,7 +995,7 @@ export function LandingPage() {
                           {Math.round(activeLocation.score * 100)}%
                         </span>
                         <span
-                          className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded"
+                          className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded font-mono"
                           style={{
                             background: `${RISK_COLOR[activeLocation.risk]}20`,
                             color: RISK_COLOR[activeLocation.risk],
@@ -1107,13 +1093,12 @@ export function LandingPage() {
         }}
       >
         <div className="mx-auto max-w-4xl relative z-10">
-          <div className="text-6xl font-editorial opacity-35 mb-3 text-sky-400">
+          <div className="text-6xl font-official opacity-35 mb-3 text-sky-400">
             “
           </div>
 
           <p
-            className="font-editorial text-2xl sm:text-4xl md:text-5xl font-normal leading-snug mb-8"
-            style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }}
+            className="font-official text-2xl sm:text-4xl md:text-5xl font-normal leading-snug mb-8"
           >
             Technology alone doesn’t save lives.
             <br />
@@ -1124,8 +1109,8 @@ export function LandingPage() {
 
           <div className="flex items-center justify-center gap-3">
             <AarakshLogo size="sm" />
-            <span className="font-bold tracking-[0.25em] text-xs uppercase text-slate-400">
-              AARAKSH · SIH 2026 PROTOTYPE
+            <span className="font-govt font-bold tracking-[0.22em] text-xs uppercase text-slate-300">
+              AARAKSH · FLASH FLOOD EARLY WARNING INITIATIVE · SIH 2026
             </span>
           </div>
         </div>
@@ -1150,21 +1135,20 @@ export function LandingPage() {
             }}
           >
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] mb-3 text-sky-400">
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] mb-3 text-sky-400 font-mono">
                 DISASTER RESILIENCE · HIMALAYAS
               </p>
               <h2
-                className="font-editorial text-3xl sm:text-5xl font-normal leading-tight mb-4"
+                className="font-govt text-3xl sm:text-5xl font-bold leading-tight mb-4 uppercase tracking-wide"
                 style={{
-                  fontFamily: 'Cormorant Garamond, Georgia, serif',
                   color: isDark ? '#f8fafc' : '#0f172a',
                 }}
               >
-                Be Part of a <span className="italic" style={{ color: '#38bdf8' }}>Safer Tomorrow</span>
+                Be Part of a <span style={{ color: isDark ? '#38bdf8' : '#0284c7' }}>Safer Tomorrow</span>
               </h2>
               <p
-                className="text-sm sm:text-base leading-relaxed mb-8 max-w-lg"
-                style={{ color: isDark ? '#94a3b8' : '#64748b' }}
+                className="font-official text-sm sm:text-base leading-relaxed mb-8 max-w-lg"
+                style={{ color: isDark ? '#cbd5e1' : '#475569' }}
               >
                 Access real-time GIS analytics, test predictive simulation scenarios, and evaluate our AI-powered early warning architecture designed for India's hilly terrains.
               </p>
@@ -1196,13 +1180,13 @@ export function LandingPage() {
 
             <div className="flex flex-col items-center justify-center text-center p-6">
               <div
-                className="font-editorial text-4xl sm:text-5xl font-bold mb-2 tracking-tight"
+                className="font-govt text-4xl sm:text-5xl font-bold mb-2 tracking-wide uppercase"
                 style={{ color: isDark ? '#f8fafc' : '#0f172a' }}
               >
                 Safer Hills
               </div>
               <div
-                className="font-editorial text-3xl sm:text-4xl italic font-normal mb-5 text-sky-400"
+                className="font-govt text-3xl sm:text-4xl font-semibold mb-5 text-sky-500 uppercase tracking-wide"
               >
                 Stronger India
               </div>
@@ -1229,11 +1213,11 @@ export function LandingPage() {
           <div className="flex items-center gap-3">
             <AarakshLogo size="md" />
             <div>
-              <p className="text-sm font-bold tracking-[0.2em] uppercase" style={{ color: isDark ? '#f8fafc' : '#0f172a' }}>
+              <p className="font-govt text-sm font-bold tracking-[0.22em] uppercase" style={{ color: isDark ? '#f8fafc' : '#0f172a' }}>
                 AARAKSH
               </p>
               <p className="text-[11px] text-slate-500">
-                Flash Flood Intelligence Platform · SIH 2026
+                Flash Flood Early Warning Platform · SIH 2026
               </p>
             </div>
           </div>
@@ -1246,10 +1230,9 @@ export function LandingPage() {
             <Link to={ROUTES.LOGIN} className="hover:text-sky-400 transition-colors">ACCESS</Link>
           </div>
 
-          {/* Theme switch in footer + copyright */}
+          {/* Copyright only - theme toggle removed from footer as requested */}
           <div className="flex items-center gap-4 text-xs text-slate-500">
-            <ThemeToggle variant="pill" />
-            <span>© 2026 Team NeuroNauts</span>
+            <span>© 2026 Team NeuroNauts · SIH 2026</span>
           </div>
         </div>
       </footer>
