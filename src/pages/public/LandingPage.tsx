@@ -10,6 +10,7 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { AarakshLogo } from '@/components/ui/AarakshLogo';
 import { RainEffect } from '@/components/ui/RainEffect';
+import { TacticalIndiaMap } from '@/components/map/TacticalIndiaMap';
 
 // ── Live simulated sensor feed for hero card ──────────────────────────
 const HERO_TELEMETRY = [
@@ -885,95 +886,19 @@ export function LandingPage() {
                   border: isDark ? '1px solid rgba(56, 189, 248, 0.22)' : '1px solid #cbd5e1',
                 }}
               >
-                {/* Simulated GIS Topographic Map Canvas with Radar Sweep */}
-                <div
-                  className="relative h-64 sm:h-76 overflow-hidden flex items-center justify-center"
-                  style={{
-                    background: isDark
-                      ? 'linear-gradient(180deg, #091422 0%, #0d1e33 100%)'
-                      : 'linear-gradient(180deg, #e2e8f0 0%, #cbd5e1 100%)',
-                  }}
-                >
-                  {/* Contour Lines Graphic */}
-                  <svg
-                    viewBox="0 0 600 300"
-                    className="absolute inset-0 w-full h-full opacity-30"
-                    preserveAspectRatio="none"
-                  >
-                    <path d="M0,180 Q150,110 300,160 T600,130 L600,300 L0,300 Z" fill="#0284c7" />
-                    <path d="M0,220 Q200,160 400,210 T600,190 L600,300 L0,300 Z" fill="#0369a1" />
-                    <path d="M0,250 Q250,200 450,240 T600,220 L600,300 L0,300 Z" fill="#0c4a6e" />
-                  </svg>
-
-                  {/* Topographic Elevation Grid Rings */}
-                  <div
-                    className="absolute inset-0 opacity-15"
-                    style={{
-                      backgroundImage: 'radial-gradient(circle at 50% 50%, rgba(56,189,248,0.5) 1px, transparent 1px)',
-                      backgroundSize: '36px 36px',
+                {/* Tactical India Hazard & Alert Radar Map (Approach 1 - 100% Presentation-Ready) */}
+                <div className="relative h-72 sm:h-84 overflow-hidden">
+                  <TacticalIndiaMap
+                    isCompact={true}
+                    selectedLocationId={selectedLocId}
+                    onSelectLocation={(id) => {
+                      const match = PREVIEW_LOCATIONS.find(
+                        (l) => l.id === id || l.name.toLowerCase().includes(id.toLowerCase())
+                      );
+                      if (match) setSelectedLocId(match.id);
                     }}
+                    height="100%"
                   />
-
-                  {/* Station Radar Pings on Map */}
-                  {PREVIEW_LOCATIONS.map((loc, idx) => {
-                    const isSelected = loc.id === selectedLocId;
-                    const coords = [
-                      { left: '22%', top: '28%' },
-                      { left: '42%', top: '44%' },
-                      { left: '60%', top: '34%' },
-                      { left: '78%', top: '56%' },
-                      { left: '50%', top: '72%' },
-                    ][idx];
-
-                    return (
-                      <button
-                        key={loc.id}
-                        type="button"
-                        onClick={() => setSelectedLocId(loc.id)}
-                        className="absolute transform -translate-x-1/2 -translate-y-1/2 group cursor-pointer transition-transform hover:scale-125 z-10"
-                        style={{ ...coords }}
-                      >
-                        <span className="relative flex h-5 w-5 items-center justify-center">
-                          {isSelected && (
-                            <span
-                              className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75"
-                              style={{ backgroundColor: RISK_COLOR[loc.risk] }}
-                            />
-                          )}
-                          <span
-                            className="relative inline-flex rounded-full h-3.5 w-3.5 border-2"
-                            style={{
-                              backgroundColor: RISK_COLOR[loc.risk],
-                              borderColor: isSelected ? '#ffffff' : 'rgba(255,255,255,0.7)',
-                              boxShadow: isSelected ? `0 0 12px ${RISK_COLOR[loc.risk]}` : 'none',
-                            }}
-                          />
-                        </span>
-                        <span
-                          className="absolute left-6 top-0 text-[10px] font-semibold whitespace-nowrap px-1.5 py-0.5 rounded shadow-sm"
-                          style={{
-                            background: isDark ? 'rgba(7, 13, 21, 0.9)' : 'rgba(255, 255, 255, 0.95)',
-                            color: isDark ? '#ffffff' : '#0f172a',
-                            border: isDark ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid #cbd5e1',
-                          }}
-                        >
-                          {loc.name}
-                        </span>
-                      </button>
-                    );
-                  })}
-
-                  {/* Top Bar on Map */}
-                  <div className="absolute top-3 left-3 flex items-center gap-2">
-                    <span className="flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-                    <span className="text-[11px] font-mono uppercase tracking-wider text-slate-300 bg-black/50 px-2 py-0.5 rounded backdrop-blur-sm">
-                      GIS RADAR LAYER: {intelligenceTab.toUpperCase()}
-                    </span>
-                  </div>
-
-                  <div className="absolute bottom-3 right-3 text-[10px] font-mono text-slate-300 bg-black/50 px-2 py-0.5 rounded backdrop-blur-sm">
-                    Mandakini Valley Corridor · {activeLocation.elevation}
-                  </div>
                 </div>
 
                 {/* Selected Station Deep Telemetry Card */}

@@ -8,6 +8,7 @@ import { getRiskColor } from '@/lib/utils';
 import { MOCK_LOCATIONS } from '@/data/mockLocations';
 import { RiskData, RiskLevel } from '@/types';
 import { MAP_CONFIG, ROUTES } from '@/lib/constants';
+import { TacticalIndiaMap } from '@/components/map/TacticalIndiaMap';
 import {
   X, Layers, MapPin, TrendingUp, TrendingDown, Minus,
   AlertTriangle, Brain, Shield, ArrowRight
@@ -41,6 +42,7 @@ export function RiskMapPage() {
     setScenario, isSimulating, toggleSimulation,
   } = useDemoMode();
 
+  const [mapMode, setMapMode] = useState<'tactical' | 'satellite'>('tactical');
   const [layers, setLayers] = useState(LAYER_OPTIONS);
   const [showLayers, setShowLayers] = useState(false);
   const [mapLoaded, setMapLoaded] = useState(false);
@@ -147,11 +149,52 @@ export function RiskMapPage() {
       </div>
 
       <div className="relative flex-1 min-h-0">
-        {/* Map */}
-        <div ref={mapContainerRef} className="absolute inset-0" />
+        {/* Approach 1: Presentation-Ready Tactical India Hazard Map */}
+        {mapMode === 'tactical' && (
+          <div className="absolute inset-0 z-0">
+            <TacticalIndiaMap
+              selectedLocationId={selectedLocationId}
+              onSelectLocation={(id) => setSelectedLocationId(loc => loc === id ? null : id)}
+              scenarioRiskData={scenarioRiskData}
+            />
+          </div>
+        )}
 
-        {/* Scenario control — top center */}
-        <div className="absolute top-3 left-1/2 -translate-x-1/2 z-10">
+        {/* Live Satellite / Vector Tiles Container */}
+        <div
+          ref={mapContainerRef}
+          className={`absolute inset-0 transition-opacity duration-300 ${
+            mapMode === 'satellite' ? 'opacity-100 pointer-events-auto z-0' : 'opacity-0 pointer-events-none'
+          }`}
+        />
+
+        {/* Map View Toggle & Scenario Control — top center */}
+        <div className="absolute top-3 left-1/2 -translate-x-1/2 z-10 flex flex-wrap items-center justify-center gap-2 max-w-[95vw]">
+          {/* Presentation Mode Toggle */}
+          <div className="flex items-center rounded-full bg-slate-900/90 border border-sky-400/40 shadow-lg p-1 text-xs backdrop-blur-md">
+            <button
+              onClick={() => setMapMode('tactical')}
+              className={`rounded-full px-3 py-1 font-mono font-semibold transition-all flex items-center gap-1.5 ${
+                mapMode === 'tactical'
+                  ? 'bg-sky-500 text-white shadow-md'
+                  : 'text-slate-300 hover:text-white'
+              }`}
+            >
+              <span>🇮🇳 Tactical India Map</span>
+            </button>
+            <button
+              onClick={() => setMapMode('satellite')}
+              className={`rounded-full px-3 py-1 font-mono font-semibold transition-all flex items-center gap-1.5 ${
+                mapMode === 'satellite'
+                  ? 'bg-sky-500 text-white shadow-md'
+                  : 'text-slate-300 hover:text-white'
+              }`}
+            >
+              <span>🛰️ Satellite / OSM</span>
+            </button>
+          </div>
+
+          {/* Scenario control */}
           <div className="flex items-center gap-1 rounded-full bg-white/95 border border-slate-200 shadow px-3 py-1.5 text-xs backdrop-blur">
             {(['NORMAL', 'HEAVY_RAIN', 'RISING_RISK', 'CRITICAL'] as const).map(id => (
               <button
@@ -179,47 +222,51 @@ export function RiskMapPage() {
           </div>
         </div>
 
-        {/* Layer control */}
-        <div className="absolute top-3 left-3 z-10 flex flex-col gap-2">
-          <button
-            onClick={() => setShowLayers(o => !o)}
-            className="flex items-center gap-2 rounded-md bg-white border border-slate-200 px-3 py-2 text-xs font-medium text-slate-700 shadow hover:bg-slate-50"
-          >
-            <Layers className="h-3.5 w-3.5" /> Layers
-          </button>
+        {/* Layer control (Satellite Mode) */}
+        {mapMode === 'satellite' && (
+          <div className="absolute top-3 left-3 z-10 flex flex-col gap-2">
+            <button
+              onClick={() => setShowLayers(o => !o)}
+              className="flex items-center gap-2 rounded-md bg-white border border-slate-200 px-3 py-2 text-xs font-medium text-slate-700 shadow hover:bg-slate-50"
+            >
+              <Layers className="h-3.5 w-3.5" /> Layers
+            </button>
 
-          {showLayers && (
-            <div className="rounded-lg bg-white border border-slate-200 shadow-lg p-3 min-w-[180px] animate-fade-in">
-              <p className="text-xs font-semibold text-slate-700 mb-2">Data Layers</p>
-              {layers.map(layer => (
-                <label key={layer.id} className={`flex items-center gap-2 py-1 ${!layer.available ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer'}`}>
-                  <input
-                    type="checkbox"
-                    checked={layer.enabled}
-                    onChange={() => setLayers(ls => ls.map(l => l.id === layer.id && l.available ? { ...l, enabled: !l.enabled } : l))}
-                    disabled={!layer.available}
-                    className="rounded border-slate-300 text-blue-600"
-                  />
-                  <span className="text-xs text-slate-700 flex-1">{layer.label}</span>
-                  {!layer.available && <span className="text-[9px] text-slate-400">Planned</span>}
-                </label>
-              ))}
-              <p className="text-[9px] text-slate-400 mt-2 border-t border-slate-100 pt-1.5">Additional layers available when real data feeds are integrated</p>
-            </div>
-          )}
-        </div>
+            {showLayers && (
+              <div className="rounded-lg bg-white border border-slate-200 shadow-lg p-3 min-w-[180px] animate-fade-in">
+                <p className="text-xs font-semibold text-slate-700 mb-2">Data Layers</p>
+                {layers.map(layer => (
+                  <label key={layer.id} className={`flex items-center gap-2 py-1 ${!layer.available ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer'}`}>
+                    <input
+                      type="checkbox"
+                      checked={layer.enabled}
+                      onChange={() => setLayers(ls => ls.map(l => l.id === layer.id && l.available ? { ...l, enabled: !l.enabled } : l))}
+                      disabled={!layer.available}
+                      className="rounded border-slate-300 text-blue-600"
+                    />
+                    <span className="text-xs text-slate-700 flex-1">{layer.label}</span>
+                    {!layer.available && <span className="text-[9px] text-slate-400">Planned</span>}
+                  </label>
+                ))}
+                <p className="text-[9px] text-slate-400 mt-2 border-t border-slate-100 pt-1.5">Additional layers available when real data feeds are integrated</p>
+              </div>
+            )}
+          </div>
+        )}
 
-        {/* Legend */}
-        <div className="absolute bottom-8 left-3 z-10 rounded-lg bg-white border border-slate-200 shadow p-3">
-          <p className="text-xs font-semibold text-slate-700 mb-2">Risk Level</p>
-          {riskLevels.map(({ level, label }) => (
-            <div key={level} className="flex items-center gap-2 mb-1">
-              <span className="h-3 w-3 rounded-full" style={{ backgroundColor: getRiskColor(level) }} />
-              <span className="text-xs text-slate-600">{label}</span>
-            </div>
-          ))}
-          <p className="text-[10px] text-slate-400 mt-1 border-t border-slate-100 pt-1">Demo Data — Click marker to select</p>
-        </div>
+        {/* Legend (Satellite Mode) */}
+        {mapMode === 'satellite' && (
+          <div className="absolute bottom-8 left-3 z-10 rounded-lg bg-white border border-slate-200 shadow p-3">
+            <p className="text-xs font-semibold text-slate-700 mb-2">Risk Level</p>
+            {riskLevels.map(({ level, label }) => (
+              <div key={level} className="flex items-center gap-2 mb-1">
+                <span className="h-3 w-3 rounded-full" style={{ backgroundColor: getRiskColor(level) }} />
+                <span className="text-xs text-slate-600">{label}</span>
+              </div>
+            ))}
+            <p className="text-[10px] text-slate-400 mt-1 border-t border-slate-100 pt-1">Demo Data — Click marker to select</p>
+          </div>
+        )}
 
         {/* Selected location intelligence panel */}
         {selectedLocation && selectedRisk && (
