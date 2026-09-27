@@ -154,7 +154,7 @@ export function RiskMapPage() {
           <div className="absolute inset-0 z-0">
             <TacticalIndiaMap
               selectedLocationId={selectedLocationId}
-              onSelectLocation={(id) => setSelectedLocationId(loc => loc === id ? null : id)}
+              onSelectLocation={(id: string) => setSelectedLocationId(selectedLocationId === id ? null : id)}
               scenarioRiskData={scenarioRiskData}
             />
           </div>
