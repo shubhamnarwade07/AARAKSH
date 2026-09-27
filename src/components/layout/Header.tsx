@@ -1,10 +1,10 @@
-import { Menu, Bell, ChevronDown, RefreshCw } from 'lucide-react';
+import { Menu, Bell, ChevronDown } from 'lucide-react';
 import { useLocation, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useDemoMode } from '@/contexts/DemoContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
-import { cn, formatTime, getRiskColor } from '@/lib/utils';
+import { getRiskColor } from '@/lib/utils';
 import { ROUTES } from '@/lib/constants';
 import { useState, useEffect } from 'react';
 import { useAlerts } from '@/hooks/useAlerts';

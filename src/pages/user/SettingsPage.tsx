@@ -1,8 +1,7 @@
-import { Bell, Map, Shield, Info, Monitor, Sun, Moon } from 'lucide-react';
+import { Bell, Info, Monitor, Sun, Moon } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
 import { useDemoMode } from '@/contexts/DemoContext';
 import { useTheme } from '@/contexts/ThemeContext';
-import { ThemeToggle } from '@/components/ui/ThemeToggle';
 
 export function SettingsPage() {
   const { currentScenario, setScenario } = useDemoMode();

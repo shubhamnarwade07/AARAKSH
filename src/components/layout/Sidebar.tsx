@@ -1,8 +1,8 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, Map, TrendingUp, Bell, MapPin, Shield, FileText,
-  User, Settings, LogOut, Activity, Database,
-  Users, Brain, ScrollText, X, Gauge, CloudRain, BookOpen, ChevronRight
+  User, Settings, LogOut, Activity,
+  Users, Brain, ScrollText, X, Gauge, CloudRain, ChevronRight
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/contexts/AuthContext';
@@ -10,6 +10,7 @@ import { ROUTES } from '@/lib/constants';
 import { useDemoMode } from '@/contexts/DemoContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { getRiskColor } from '@/lib/utils';
+import { AarakshLogo } from '@/components/ui/AarakshLogo';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -143,16 +144,8 @@ export function Sidebar({ isOpen, isMobileOpen, onMobileClose }: SidebarProps) {
         )}
         style={{ borderBottom: '1px solid var(--border-subtle)' }}
       >
-        {/* Square 'A' Logo matching landing page and reference image */}
-        <div
-          className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-md font-bold text-white shadow-sm"
-          style={{
-            background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)',
-            boxShadow: '0 2px 8px rgba(2, 132, 199, 0.3)',
-          }}
-        >
-          <span className="text-sm tracking-wider font-extrabold">A</span>
-        </div>
+        {/* Brand Logo */}
+        <AarakshLogo size="sm" />
         {!isCollapsed && (
           <div className="min-w-0">
             <div

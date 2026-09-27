@@ -6,6 +6,8 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { ROUTES, DEMO_ACCOUNTS } from '@/lib/constants';
 
+import { AarakshLogo } from '@/components/ui/AarakshLogo';
+
 export function LoginPage() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -69,15 +71,7 @@ export function LoginPage() {
         {/* Brand */}
         <div className="text-center mb-8">
           <div className="flex justify-center mb-4">
-            <div
-              className="flex h-12 w-12 items-center justify-center rounded-xl shadow-lg font-bold text-white text-lg tracking-wider"
-              style={{
-                background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)',
-                boxShadow: '0 4px 16px rgba(2, 132, 199, 0.4)',
-              }}
-            >
-              A
-            </div>
+            <AarakshLogo size="xl" />
           </div>
           <h1
             className="text-2xl font-bold uppercase tracking-[0.2em]"
